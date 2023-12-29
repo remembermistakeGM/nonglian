@@ -1,0 +1,50 @@
+
+.diy-banner-box {
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.diy-banner-box,
+.diy-banner-box .swiper {
+	width: 100%;
+	/* background-color: #FFFFFF; */
+}
+.diy-banner-box image {
+	width: 100%;
+}
+.diy-banner-box .swiper-dots {
+	position: absolute;
+	bottom: 20rpx;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 100%;
+	z-index: 2;
+}
+.swiper-dots.square .swiper-dot {
+	width: 14rpx;
+	height: 14rpx;
+	margin: 0 4rpx;
+	background: #ebedf0;
+	opacity: 0.3;
+}
+.swiper-dots.round .swiper-dot {
+	width: 22rpx;
+	height: 22rpx;
+	margin: 0 4rpx;
+	background: #ebedf0;
+	opacity: 0.3;
+	border-radius: 50%;
+}
+.swiper-dots.rectangle .swiper-dot {
+	width: 40rpx;
+	height: 6rpx;
+	margin: 0 4rpx;
+	background: #ebedf0;
+	opacity: 0.3;
+	border-radius: 4rpx;
+}
+.swiper-dots.round .swiper-dot.active,
+.swiper-dots.square .swiper-dot.active,
+.swiper-dots.rectangle .swiper-dot.active {
+	opacity: 1;
+}

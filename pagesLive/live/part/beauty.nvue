@@ -1,0 +1,274 @@
+<template>
+	<view class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer">
+			<div class="more-box" @tap.stop="">
+				<view class="p-20-0">
+					<slider class="progress-bar-slider" :value="value" activeColor="#E2231A" backgroundColor="#FFFFFF" :block-size='20'
+						block-color="#FFFFFF" @change="sliderChange" :min="0" :max="10" />
+				</view>
+				<view class="more-box-list">
+					<view class="more-list" @tap="setBrightness">
+						<view class="more-iconbox"  :class="{'more-iconbox-active': activeIndex == 0}">
+							<!-- #ifndef APP-PLUS -->
+							<text class="icon iconfont icon-liangdu_o i-btntool more-icont"></text>
+							<!-- #endif -->
+							<!-- #ifdef APP-PLUS -->
+							<text class="icon iconfont icon-liangdu_o i-btntool more-icont">&#xeb66;</text>
+							<!-- #endif -->
+						</view>
+						<text class="f22 white mt20">亮度</text>
+					</view>
+					<view class="more-list"  @tap="setSmoothness">
+						<view class="more-iconbox"  :class="{'more-iconbox-active': activeIndex == 1}">
+							<!-- #ifndef APP-PLUS -->
+							<text class="icon iconfont icon-guanghua i-btntool more-icont"></text>
+							<!-- #endif -->
+							<!-- #ifdef APP-PLUS -->
+							<text class="icon iconfont icon-guanghua i-btntool more-icont">&#xe675;</text>
+							<!-- #endif -->
+						</view>
+						<text class="f22 white mt20">平滑度</text>
+					</view>
+					<view class="more-list" @tap="setRedness">
+						<view class="more-iconbox"  :class="{'more-iconbox-active': activeIndex == 2}" >
+							<!-- #ifndef APP-PLUS -->
+							<text class="icon iconfont icon-Vlian i-btntool more-icont"></text>
+							<!-- #endif -->
+							<!-- #ifdef APP-PLUS -->
+							<text class="icon iconfont icon-Vlian i-btntool more-icont">&#xe677;</text>
+							<!-- #endif -->
+						</view>
+						<text class="f22 white mt20">红色度</text>
+					</view>
+					<view class="more-list" @tap="setSharpness">
+						<view  class="more-iconbox"  :class="{'more-iconbox-active': activeIndex == 3}">
+							<!-- #ifndef APP-PLUS -->
+							<text class="icon iconfont icon-qingxidu i-btntool more-icont"></text>
+							<!-- #endif -->
+							<!-- #ifdef APP-PLUS -->
+							<text class="icon iconfont icon-qingxidu i-btntool more-icont">&#xe667;</text>
+							<!-- #endif -->
+						</view>
+						<text class="f22 white mt20">锐度</text>
+					</view>
+				</view>
+				<view class="foot-box">
+					<text class="grayD f22" @tap="resetBeauty">重置</text>
+					<text class="grayD f22">美颜</text>
+					<!-- #ifndef APP-PLUS -->
+					<text class="grayD f22 icon iconfont icon-tijiaochenggong" @click="close"></text>
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
+					<text class="icon iconfont icon-lizhirenyuan i-btntool more-icont"  @click="close">&#xe614;</text>
+					<!-- #endif -->
+				</view>
+			</div>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				activeIndex: 0,
+				value: 1
+			}
+		},
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().font_url + "')"
+			});
+			console.log(getApp().font_url);
+			// #endif
+		},
+		methods: {
+			show() {
+				this.activeIndex = 0;
+				this.value = uni.getStorageSync('lightening') * 10;
+				this.popupVisible = true;
+			},
+			/*改变*/
+			sliderChange(e) {
+				let value = e.detail.value / 10;
+				if (this.activeIndex == 0) {
+					uni.setStorageSync('lightening', value);
+				}
+				if (this.activeIndex == 1) {
+					uni.setStorageSync('smoothness', value);
+				}
+				if (this.activeIndex == 2) {
+					uni.setStorageSync('redness', value);
+				}
+				if (this.activeIndex == 3) {
+					uni.setStorageSync('sharpness', value);
+				}
+				this.$emit('liveSet', 'set');
+			},
+			close() {
+				this.popupVisible = false;
+				this.$emit('close')
+			},
+			setBrightness(){
+				this.activeIndex = 0;
+				this.value = uni.getStorageSync('lightening') * 10;
+			},
+			setSmoothness(){
+				this.activeIndex = 1;
+				this.value = uni.getStorageSync('smoothness') * 10;
+			},
+			setRedness(){
+				this.activeIndex = 2;
+				this.value = uni.getStorageSync('redness') * 10;
+			},
+			setSharpness(){
+				this.activeIndex = 3;
+				this.value = uni.getStorageSync('sharpness') * 10;
+			},
+			resetBeauty(){
+				this.$emit('liveSet', 'reset');
+				if (this.activeIndex == 0) {
+					this.value = 6;
+				}else if (this.activeIndex == 1) {
+					this.value = 5;
+				}else if (this.activeIndex == 2) {
+					this.value = 1;
+				}else if (this.activeIndex == 3) {
+					this.value = 3;
+				}
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+	.foot-box{
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid rgba(255,255,255,.1);
+		padding: 0 23rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+	}
+	.foot-box .icon.iconfont{
+		font-size: 22rpx;
+		color: #DDDDDD;
+	}
+	.more-box {
+		background: rgba(0, 0, 0, .85);
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+	}
+	.more-box-list{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 34rpx 107rpx 43rpx 134rpx;
+	}
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+	}
+	 .more-list .icon.iconfont{
+		 color: #FFFFFF;
+	 }
+	.more-icont {
+		font-size: 46rpx;
+		color: #FFFFFF;
+	}
+
+	.Progress {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+	}
+
+	.progress-bar {
+		width: 364rpx;
+		height: 75rpx;
+		margin-left: 193rpx;
+		align-items: center;
+		justify-content: center;
+		margin:auto;
+		padding-top: 30rpx;
+		/* background-color: red; */
+	}
+	.progress-bar-slider{
+		width: 364rpx;
+		margin-left: 193rpx;
+	}
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+	.more-iconbox{
+		width: 69rpx;
+		height: 69rpx;
+		background: rgba(255,255,255,.2);
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.more-iconbox-active{
+		background: #8AE4F0;
+	}
+</style>

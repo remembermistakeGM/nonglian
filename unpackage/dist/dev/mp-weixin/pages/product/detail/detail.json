@@ -1,0 +1,15 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "商品详情",
+  "usingComponents": {
+    "share": "./popup/share",
+    "guarantee": "../../../components/guarantee",
+    "coupon": "./popup/coupon",
+    "spec": "./popup/spec",
+    "uni-popup": "../../../components/uni-popup",
+    "mpservice": "../../../components/mpservice/Mpservice",
+    "app-share": "../../../components/app-share",
+    "countdown": "../../../components/countdown/countdown-presale",
+    "preview-product": "./productinfo/previewProduct"
+  }
+}

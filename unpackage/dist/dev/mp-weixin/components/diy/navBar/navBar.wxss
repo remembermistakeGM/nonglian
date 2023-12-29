@@ -1,0 +1,31 @@
+
+.diy-navbar {
+}
+.diy-navBar {
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+.diy-navbar .item {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20rpx;
+	width: 120rpx;
+	height: 140rpx;
+}
+.diy-navbar .item image {
+	width: 70rpx;
+	height: 70rpx;
+}
+.diy-navbar .item text {
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100%;
+	overflow: hidden;
+	line-height: 66rpx;
+	font-size: 24rpx;
+	text-align: center;
+}

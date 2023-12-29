@@ -1,0 +1,302 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.bg-lottery {
+  width: 750rpx;
+  min-height: 1843rpx;
+  background-size: 750rpx 1843rpx;
+  background-position: 0 0;
+  overflow: hidden;
+}
+.rule-title {
+  font-size: 26rpx;
+  margin: 0 auto;
+  width: 640rpx;
+  margin-top: 287rpx;
+  color: #ffffff;
+}
+.rule-title-t {
+  background-color: #ee1413;
+  border-radius: 12rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  width: 400rpx;
+  padding: 25rpx 35rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+.lottery-title {
+  padding-top: 30rpx;
+  position: relative;
+  z-index: 1;
+}
+.lottery-base {
+  position: relative;
+  z-index: 0;
+  margin-top: -6rpx;
+  margin-bottom: 80rpx;
+}
+.base-image {
+  width: 424rpx;
+  height: 186rpx;
+  margin: 0 auto;
+}
+.btn-image {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  bottom: -48rpx;
+  width: 262rpx;
+  height: 130rpx;
+}
+button.record {
+  width: 252rpx;
+  height: 64rpx;
+  background: #ffc519;
+  border: 1px solid #ff840a;
+  box-shadow: 0rpx 6rpx 5rpx 0rpx rgba(0, 0, 0, 0.12);
+  border-radius: 32rpx;
+  padding: 0;
+  color: #956746;
+  font-size: 26rpx;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.record .icon.icon-bofang {
+  font-size: 22rpx;
+  color: #956746;
+  margin-left: 10rpx;
+}
+.ruler-box {
+  box-sizing: border-box;
+  width: 678rpx;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx 45rpx;
+}
+.special-box {
+  width: 678rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 22rpx;
+  padding: 0 64rpx;
+  box-sizing: border-box;
+  margin: 60rpx auto;
+}
+.special-content {
+  width: 551rpx;
+  font-size: 30rpx;
+  font-family: Source Han Sans CN;
+  font-weight: 500;
+  color: #e8573c;
+  flex: 1;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.special-content-list {
+  transition: transform 0.4s;
+}
+.content-item {
+  height: 60rpx;
+  line-height: 60rpx;
+}
+.special-content.display_1 {
+  height: 60rpx;
+}
+.pop_img {
+  width: 130rpx;
+  height: 130rpx;
+  margin-bottom: 20rpx;
+}
+.pop_img image {
+  width: 130rpx;
+  height: 130rpx;
+}
+.pop-record-line {
+  background-color: #333333;
+  width: 245rpx;
+  height: 1rpx;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: -1;
+}
+.pop-record-text {
+  color: #333333;
+  font-size: 28rpx;
+  background-color: #ffffff;
+  display: inline;
+  padding: 0 12rpx;
+}
+.pop-tit-line {
+  background-color: #f5ddc1;
+  width: 472rpx;
+  height: 2rpx;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: -1;
+}
+.pop-tit-text {
+  color: #f5ddc1;
+  font-size: 52rpx;
+  background-color: #ea564c;
+  display: inline;
+  padding: 0 16rpx;
+}
+.product-box {
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  padding: 45rpx 0;
+}
+.circular-right {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: #ea564c;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  right: -22rpx;
+}
+.circular-left {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background-color: #ea564c;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  left: -22rpx;
+}
+.record-box {
+  padding-bottom: 70rpx;
+}
+.record-list-btn {
+  width: 96rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  font-size: 22rpx;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin-left: 16rpx;
+}
+.targetLink {
+  text-decoration: underline;
+  color: #ea564c;
+}
+.top-box {
+  position: absolute;
+  top: 30rpx;
+  z-index: 2;
+}
+.lottery-points {
+  width: 56rpx;
+  height: 56rpx;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+.points-rule {
+  width: 175rpx;
+  height: 64rpx;
+  background: #ffc519;
+  border-radius: 31rpx 0 0 31rpx;
+  color: #956746;
+  font-size: 28rpx;
+  line-height: 64rpx;
+  text-align: center;
+}
+.yellow {
+  color: #ffc519;
+}
+.pop-center {
+  position: relative;
+  width: 575rpx;
+  height: 550rpx;
+}
+.pop-title {
+  position: relative;
+  height: 77rpx;
+  line-height: 77rpx;
+  color: #ffffff;
+  font-size: 28rpx;
+  text-align: center;
+  z-index: 1;
+}
+.pop-title-box {
+  padding: 78rpx 52rpx 20rpx 42rpx;
+  white-space: pre-line;
+  color: #7f685a;
+  font-size: 26rpx;
+  line-height: 46rpx;
+}
+.bg-rule {
+  width: 575rpx;
+  height: 550rpx;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+}
+.swiper {
+  width: 660rpx;
+  /* 高度跟自己需要的子元素更改，我这里是显示3个，每个50rpx 所以是150rpx */
+  height: 300rpx;
+  margin: 50rpx auto;
+}
+.box {
+  color: #ffffff;
+  font-size: 24rpx;
+  line-height: 1.2;
+  height: 60rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10rpx;
+}

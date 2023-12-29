@@ -1,0 +1,275 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.bargain-detail {
+  padding-bottom: 90rpx;
+}
+.bargain-detail .product-pic,
+.bargain-detail .product-pic .swiper,
+.bargain-detail .product-pic image {
+  width: 750rpx;
+  height: 750rpx;
+}
+.bargain-detail .price-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bargain-detail .price-wrap .left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.bargain-detail .price-wrap .new-price {
+  color: #e2231a;
+  font-size: 30rpx;
+}
+.bargain-detail .price-wrap .new-price .num {
+  padding: 0 4rpx;
+  font-size: 40rpx;
+}
+.bargain-detail .price-wrap .old-price {
+  margin-left: 10rpx;
+  font-size: 24rpx;
+  color: #999999;
+  text-decoration: line-through;
+}
+.bargain-detail .product-name {
+  padding: 20rpx 0;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.bargain-detail .product-describe {
+  padding: 20rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+.product-comment,
+.product-content {
+  margin-top: 20rpx;
+  background: #ffffff;
+}
+.product-content .content-box p image {
+  width: 100%;
+}
+.product-content .content-box {
+  font-size: 36rpx;
+}
+.btns-wrap {
+  position: fixed;
+  height: 100rpx;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  background: #ffffff;
+  align-items: center;
+}
+.btns-wrap .icon-box {
+  width: 90rpx;
+  height: 90rpx;
+}
+.btns-wrap .icon-box .iconfont {
+  font-size: 40rpx;
+  color: #888888;
+}
+.btns-wrap .customer-service button {
+  height: 80rpx;
+  background-color: #FFFFFF;
+}
+.btns-wrap button,
+.btns-wrap button:after {
+  padding: 0;
+  margin: 0;
+  height: 30rpx;
+  line-height: 30rpx;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  border-radius: 0;
+  border: 0;
+}
+.btns-wrap .buy-alone {
+  width: 220rpx;
+  height: 80rpx;
+  border-top-left-radius: 40rpx;
+  border-bottom-left-radius: 40rpx;
+  margin-left: 10rpx;
+}
+.btns-wrap .make-group {
+  width: 220rpx;
+  height: 80rpx;
+  border-top-right-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  margin-right: 10rpx;
+}
+.btns-wrap .buy-alone button,
+.btns-wrap .make-group button {
+  font-size: 26rpx;
+  background: none;
+}
+.btns-wrap .buy-alone,
+.btns-wrap .buy-alone button {
+  background: #F6AC0C;
+}
+.btns-wrap .buy-alone text,
+.btns-wrap .make-group text {
+  color: #ffffff;
+  font-size: 32rpx;
+}
+.btns-wrap .make-group,
+.btns-wrap .make-group button {
+  background: #8D60FF;
+}
+.share-box {
+  position: fixed;
+  padding-right: 10rpx;
+  width: 80rpx;
+  height: 80rpx;
+  right: 0;
+  bottom: 180rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16rpx 0 0 16rpx;
+  background: rgba(0, 0, 0, 0.8);
+}
+.share-box button {
+  padding: 0;
+  background: 0;
+  line-height: 60rpx;
+}
+.share-box .iconfont {
+  margin-bottom: 10rpx;
+  font-size: 50rpx;
+  color: #ffffff;
+}
+.create-img {
+  width: 100%;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+.create-img image {
+  width: 100%;
+}
+.create-img button {
+  width: 100%;
+}
+.limited-spike {
+  padding: 0 35rpx;
+  height: 60rpx;
+  color: #ffffff;
+  border-radius: 6rpx;
+  background: linear-gradient(0deg, #EBE3FF 0%, #EEE6FF 100%);
+}
+.limited-spike .left-name {
+  font-size: 24rpx;
+  color: #5C1CFF;
+}
+.limited-spike .right {
+  color: #5C1CFF;
+  font-size: 24rpx;
+}
+.limited-spike .right .box {
+  height: 40rpx;
+  padding: 4rpx;
+  border-radius: 8rpx;
+  line-height: 40rpx;
+  text-align: center;
+  background: #EBE3FF;
+  color: #5C1CFF;
+}
+.limited-spike .right text {
+  padding: 0;
+}
+.already-choice {
+  padding: 0 30rpx;
+  background: #ffffff;
+}
+.already-choice .center-content {
+  line-height: 90rpx;
+}
+.shop_head_info {
+  margin: 20rpx;
+  padding: 30rpx;
+  box-sizing: border-box;
+  background-color: white;
+  border-radius: 12rpx;
+}
+.shop_list_body_item_shop {
+  width: 100%;
+  height: 120rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.shop_list_body_item_shop_logo {
+  width: 120rpx;
+  height: 120rpx;
+}
+.shop_list_body_item_shop_logo image {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 12rpx;
+}
+.shop_list_body_item_shop_info {
+  box-sizing: border-box;
+  margin-left: 20rpx;
+  padding-top: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+.shop_list_body_item_shop_others {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  text-align: right;
+  padding-top: 0;
+}
+.shop_list_body_item_shop_others button {
+  width: 160rpx;
+  height: 60rpx;
+  border: 1rpx solid #F6220C;
+  border-radius: 30rpx;
+  line-height: 60rpx;
+  font-size: 26rpx;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #F6220C;
+  text-align: center;
+  padding: 0;
+  background-color: #ffffff;
+}
+.pro_nameline {
+  width: 4rpx;
+  height: 24rpx;
+  background-color: #f6220c;
+  margin-right: 12rpx;
+}

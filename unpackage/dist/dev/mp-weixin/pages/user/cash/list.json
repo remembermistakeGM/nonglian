@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "余额提现",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../../components/uni-load-more"
+  }
+}

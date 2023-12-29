@@ -1,0 +1,1 @@
+<view class="diy-page"><diy wx:if="{{a}}" u-i="289aa822-0" bind:__l="__l" u-p="{{a}}"></diy><share wx:if="{{c}}" bindclose="{{b}}" u-i="289aa822-1" bind:__l="__l" u-p="{{c}}"></share><app-share wx:if="{{e}}" bindclose="{{d}}" u-i="289aa822-2" bind:__l="__l" u-p="{{e}}"></app-share></view>

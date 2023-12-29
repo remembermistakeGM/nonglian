@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "幸运大转盘",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "popup": "../../components/uni-popup",
+    "almost-lottery": "../../uni_modules/almost-lottery/components/almost-lottery/almost-lottery"
+  }
+}

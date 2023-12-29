@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "地址编辑",
+  "usingComponents": {
+    "mpvue-city-picker": "../../../../components/mpvue-citypicker/mpvueCityPicker"
+  }
+}

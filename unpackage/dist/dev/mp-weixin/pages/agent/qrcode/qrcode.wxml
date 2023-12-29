@@ -1,0 +1,1 @@
+<view class="qrcode"><image src="{{a}}" mode="widthFix"></image><view class="btns-wrap"><button class="btn-red" type="default" bindtap="{{b}}">保存图片</button></view></view>

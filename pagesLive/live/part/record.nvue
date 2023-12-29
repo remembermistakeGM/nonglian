@@ -1,0 +1,398 @@
+<template>
+	<view class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer">
+			<div class="more-box p-0-20" @tap.stop="">
+				<scroll-view class="product_list" style="height: 800rpx;" scroll-y show-scrollbar="false"
+					lower-threshold="50" @scrolltolower="scrolltolowerFunc">
+					<view v-if="listData.length>0">
+						<view class="product-item d-r d-b-c" v-for="(item,index) in listData" :key='index'>
+							<view class="flex-1 d-s-c d-r">
+								<image class="avatarUrl" :src="item.avatarurl || ''" mode=""></image>
+								<text class="name">{{item.nickName || ''}}</text>
+								<text class="grade">{{item.awardTitle || ''}}</text>
+							</view>
+							<button type="default" class="record-btn" @click="openFunc(item)"><text
+									class="btn-text">恢复</text></button>
+						</view>
+					</view>
+
+					<!-- 没有记录 -->
+					<view class="d-c-c p30" v-if="listData.length==0 && !loading">
+						<text class="f24 white">亲，暂无相关记录哦</text>
+					</view>
+				</scroll-view>
+			</div>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				img_index: 0,
+				popupVisible: false,
+				listData: [],
+				bg_index: -1,
+				search: '',
+				list_rows: 10,
+				last_page: 0,
+				/*当前页面*/
+				page: 1,
+				/*底部加载*/
+				loading: true,
+			}
+		},
+		props: ['userType', 'room_id'],
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().globalData.vueObj.font_url + "')"
+			});
+			// #endif
+		},
+		methods: {
+			/*可滚动视图区域到底触发*/
+			scrolltolowerFunc() {
+				let self = this;
+				self.page++;
+				self.loading = true;
+				if (self.page > self.last_page) {
+					self.loading = false;
+					self.no_more = true;
+					return;
+				}
+				self.getData();
+			},
+			openFunc(e) {
+				let self = this;
+				if (this.userType == 'offspe') {
+					uni.showModal({
+						title: '提示',
+						content: '确定要取消禁言该用户吗?',
+						success(res) {
+							if (res.confirm) {
+								self.openspe(e);
+								console.log('用户点击确定');
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					})
+				} else {
+					uni.showModal({
+						title: '提示',
+						content: '确定要取消删除该用户吗?',
+						success(res) {
+							if (res.confirm) {
+								self.openUser(e);
+								console.log('用户点击确定');
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					})
+				}
+			},
+			openspe(e) {
+				let self = this;
+				getApp()._get('live.room/openSay', {
+					user_id: e.user_id,
+					room_id: self.room_id
+				}, (res) => {
+					uni.showModal({
+						title: '友情提示',
+						content: res.msg,
+						showCancel: false,
+						success: function(res) {
+							self.page = 1;
+							self.listData = [];
+							self.getData();
+							self.$emit('liveSet', {
+								type: 'openSay',
+								user_id: e.user_id
+							})
+						}
+					});
+				})
+			},
+			openUser(e) {
+				let self = this;
+				getApp()._get('live.room/openPerson', {
+					user_id: e.user_id,
+					room_id: self.room_id
+				}, (res) => {
+					uni.showModal({
+						title: '友情提示',
+						content: res.msg,
+						showCancel: false,
+						success: function(res) {
+							self.page = 1;
+							self.listData = [];
+							self.getData();
+							self.$emit('liveSet', {
+								type: 'openPerson',
+								user_id: e.user_id
+							})
+						}
+					});
+				})
+			},
+			show() {
+				this.getData();
+				this.popupVisible = true;
+			},
+			searchFunc() {
+				this.restoreData();
+				this.getData();
+			},
+			/*还原初始化*/
+			restoreData() {
+				this.listData = [];
+				this.page = 1;
+			},
+			getData() {
+				let self = this;
+				self.loading = true;
+				let url = '';
+				if (self.userType == 'offspe') {
+					url = 'live.room/sayList';
+				} else {
+					url = 'live.room/kickList';
+				}
+				let params = {
+					search: self.search,
+					list_rows: self.list_rows,
+					page: self.page || 1,
+					room_id: self.room_id
+				}
+				getApp()._get(url, params, (res) => {
+					console.log(res)
+					self.loading = false;
+					if (res.data.list == '') {
+						return
+					} else {
+						self.listData = self.listData.concat(res.data.list.data);
+						self.last_page = res.data.list.last_page;
+						if (res.data.list.last_page <= 1) {
+							self.no_more = true;
+						}
+					}
+				})
+			},
+			playBgm(e, i) {
+				this.bg_index = i;
+				this.$emit('liveSet', e);
+			},
+			stopBg() {
+				this.$emit('liveSet', '');
+				this.img_index = 0;
+				this.bg_index = -1;
+			},
+			close() {
+				this.listData = [];
+				this.page = 1;
+				this.search = '';
+				this.$emit('close');
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.foot-box {
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid;
+		padding: 0 23rpx;
+		border-color: rgba(255, 255, 255, .1);
+	}
+
+	.foot-box .icon.iconfont {
+		font-size: 22rpx;
+		color: #DDDDDD;
+	}
+
+	.more-box {
+		background: rgba(0, 0, 0, .85);
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+		box-sizing: border-box;
+	}
+
+	.more-box-list {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		padding: 25rpx 0 53rpx 0;
+	}
+
+	.more-box-list-item {
+		width: 196rpx;
+		border-radius: 10rpx;
+		flex-shrink: 0;
+		margin-right: 47rpx;
+		color: #DDDDDD;
+	}
+
+	.item-image {
+		width: 196rpx;
+		height: 192rpx;
+		border-radius: 10rpx;
+		border: 3rpx solid rgba(0, 0, 0, 0);
+		padding: 6rpx;
+		margin-bottom: 4rpx;
+	}
+
+	.more-box-list-image {
+		width: 178rpx;
+		height: 174rpx;
+		border-radius: 10rpx;
+		background-color: red;
+	}
+
+	.more-box-list-item-active {
+		border: 3rpx solid #8AE4F0;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+	}
+
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+
+	.category_list {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		height: 95rpx;
+		border-bottom: 1rpx solid;
+		border-color: rgba(255, 255, 255, .1);
+		overflow-x: auto;
+	}
+
+	.category_item {
+		flex-shrink: 0;
+		margin: 0 64rpx;
+		font-size: 28rpx;
+		color: #DDDDDD;
+		height: 95rpx;
+		line-height: 95rpx;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.category_item-active-after {
+		content: '';
+		position: absolute;
+		bottom: 1rpx;
+		left: 0;
+		width: 32rpx;
+		height: 5rpx;
+		background: #DDDDDD;
+		border-radius: 3rpx;
+	}
+
+	.pop-input {
+		width: 702rpx;
+		height: 62rpx;
+		background: #FFFFFF;
+		border-radius: 30rpx;
+		font-size: 28rpx;
+		color: #999999;
+		padding: 0 30rpx;
+		margin: 25rpx auto;
+	}
+
+	.avatarUrl {
+		width: 64rpx;
+		height: 64rpx;
+		border-radius: 50%;
+		margin-right: 18rpx;
+	}
+
+	.name {
+		font-size: 26rpx;
+		font-family: PingFangSC;
+		font-weight: 400;
+		color: #ffffff;
+		margin-right: 11rpx;
+	}
+
+	.grade {
+		font-size: 20rpx;
+		font-family: PingFangSC;
+		font-weight: 400;
+		color: #999999;
+	}
+
+	.product-item {
+		height: 106rpx;
+	}
+
+	.record-btn {
+		background-color: #E2231A;
+		border: none;
+	}
+
+	.btn-text {
+		color: #FFFFFF;
+		font-size: 24rpx;
+	}
+</style>

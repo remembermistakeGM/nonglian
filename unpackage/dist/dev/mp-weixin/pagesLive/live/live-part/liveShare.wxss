@@ -1,0 +1,94 @@
+
+.iconfont.data-v-01d2a5e2 {
+		font-family: nvueIcon;
+}
+.nlv_borT.data-v-01d2a5e2 {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1rpx;
+}
+.wrapgift-mask.data-v-01d2a5e2 {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+}
+.pop__ui_child.data-v-01d2a5e2 {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+}
+.more-box.data-v-01d2a5e2 {
+		background-color: #2a2634;
+		width: 750rpx;
+		height: 350rpx;
+		position: fixed;
+		bottom: 0;
+		border-top-left-radius: 16rpx;
+		border-top-right-radius: 16rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 20rpx;
+		z-index: 9999;
+}
+.more-list.data-v-01d2a5e2 {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 1;
+		align-items: center;
+		padding: 50rpx 0;
+}
+.more-icont.data-v-01d2a5e2 {
+		font-size: 76rpx;
+}
+.more-list-active.data-v-01d2a5e2 {
+		border-width: 1rpx;
+		border-color: #ea4678;
+		border-style: solid;
+		border-radius: 16rpx;
+}
+.Progress.data-v-01d2a5e2 {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+}
+.progress-bar.data-v-01d2a5e2 {
+		position: fixed;
+		bottom: 360rpx;
+		width: 750rpx;
+		justify-content: center;
+}
+.wrap__giftPanel.data-v-01d2a5e2 {
+		z-index: 100;
+}
+.icon-weixin.data-v-01d2a5e2{
+		color: #04BE01;
+		background: none;
+}
+.icon-jingmeihaibao.data-v-01d2a5e2{
+		background: none;
+}

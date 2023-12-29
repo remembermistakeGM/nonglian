@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="rule-detail-wrap"><view bindtap="{{b}}" class="{{['rule-bg', c]}}"></view><view class="rule-content" catchtap="{{f}}"><view class="title pr"><text class="">活动规则</text><text class="iconfont icon-guanbi" bindtap="{{d}}"></text></view><view class="content"><rich-text nodes="{{e}}"/></view></view></view>

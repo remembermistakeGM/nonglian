@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "拼团详情",
+  "usingComponents": {
+    "countdown": "../../../components/countdown/countdown",
+    "mpservice": "../../../components/mpservice/Mpservice",
+    "more-bill": "./popup/MoreBill",
+    "spec": "./popup/Spec",
+    "bill": "./part/Bill",
+    "guarantee": "../../../components/guarantee"
+  }
+}

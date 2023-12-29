@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "店铺数据",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../../components/uni-load-more"
+  }
+}

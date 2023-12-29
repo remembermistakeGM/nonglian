@@ -1,0 +1,172 @@
+<template>
+	<view v-if="popupVisible" class="popup-footer">
+		<view class="pop__ui_panel">
+			<view class="pop__ui_mask" @tap="close"></view>
+			<view class="pop__ui_child anim-footer" @tap.stop="">
+				<div>
+					<div class="foot-anchorinfo-wrap-anchorinfo p-0-20 tc" v-if="live_user">
+						<div class="foot-anchorinfo-wrap-nickName d-c-c fb f34">
+							<text>{{live_user.supplier.name}}</text>
+						</div>
+						<div class="d-c-c d-r mt20 gray9 f28">
+							<text class="p-0-10 gray6 f28">粉丝{{live_user.supplier.fav_count}}</text>
+							<text class="p-0-10 gray6 f28">点赞{{live_user.digg_num}}</text>
+						</div>
+					</div>
+					<div class="foot-anchorinfo-wrap-bottom d-b-c d-r">
+						<div class="foot-anchorinfo-guanzhu flex-1 d-c-c" @tap="followFunc" v-if="!is_follow">
+							<text class="f34 gray6">+关注</text>
+						</div>
+						<div class="foot-anchorinfo-guanzhu flex-1 d-c-c" @tap="followFunc" v-if="is_follow">
+							<text class="f34 gray6">已关注</text>
+						</div>
+						<div class="foot-anchorinfo-zhuye flex-1 d-c-c" @tap="gotoAnchorPage">
+							<text class="f34 gray6">主页</text>
+						</div>
+					</div>
+				</div>
+				<div class="foot-anchorinfo-wrap-photo-box">
+					<image class="foot-anchorinfo-wrap-photo" :src="live_user.supplier.logo.file_path" mode="aspectFill"></image>
+				</div>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				/*主播对象*/
+				liveUser:{},
+				live_user:{},
+				/*是否关注*/
+				is_follow:false,
+			}
+		},
+		props: ['room_id','shop_supplier_id'],
+		methods: {
+			show() {
+				this.popupVisible = true;
+				this.getUser();
+			},
+			/*请求对象*/
+			getRequest(){
+				let self = this;
+				// #ifdef APP-PLUS
+				return getApp().globalData.vueObj;
+				// #endif
+				// #ifndef APP-PLUS
+				return self;
+				// #endif
+			},
+			/*获取主播详情*/
+			getUser() {
+				let self = this;
+				let data_type = self.data_type;
+				self.getRequest()._get(
+					'plus.live.room/detail',
+					{
+						room_id: self.room_id,
+					},
+					function(res) {
+						self.is_follow = res.data.hasFollow;
+						self.live_user = res.data.model
+					}
+				);
+			},
+			
+			/*关注*/
+			followFunc() {
+				let self = this;
+				self.getRequest()._post(
+					'user.Favorite/add',
+					{
+						shop_supplier_id: self.shop_supplier_id,
+						pid:self.shop_supplier_id,
+						type:10
+					},
+					function(res) {
+						self.$emit('changeFollow', !self.is_follow);
+						self.getUser();
+					}
+				);
+			},
+			
+			/*跳转主播个人中心*/
+			gotoAnchorPage(){
+				this.gotoPage('/pages/shop/shop?shop_supplier_id='+this.shop_supplier_id);
+			},
+			close() {
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.pop__ui_mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9998;
+	}
+
+	.pop__ui_head {
+		border-style: solid;
+		border-color: #ebebeb;
+		border-bottom-width: 1upx;
+		font-size: 28upx;
+		font-weight: 700;
+		padding: 30upx;
+		text-align: left;
+	}
+
+	.foot-anchorinfo-wrap-anchorinfo{
+		margin-top: 150rpx;
+		height: 120rpx;
+	}
+	.foot-anchorinfo-wrap-photo-box{
+		position: fixed;
+		bottom: 280rpx;
+		left: 275rpx;
+		width: 200rpx;
+		height: 200rpx;
+		z-index:9999;
+	}
+	.foot-anchorinfo-wrap-photo{
+		width: 200rpx;
+		height: 200rpx;
+		border-radius: 50%;
+	}
+	.foot-anchorinfo-wrap-nickName{
+		
+	}
+	.foot-anchorinfo-wrap-bottom{
+		height: 100rpx;
+		background-color: #f4f4f4;
+	}
+	.foot-anchorinfo-guanzhu{
+		color: #e34470;
+	}
+	.foot-anchorinfo-zhuye{
+		color: #545454;
+	}
+</style>

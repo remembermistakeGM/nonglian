@@ -1,0 +1,1 @@
+<view class="animate-wrap data-v-fa81b042"><view wx:for="{{a}}" wx:for-item="item" wx:key="d" ref="likelist" class="{{['aa', 'data-v-fa81b042', item.c && 'bb']}}"><image class="data-v-fa81b042" style="width:65rpx;height:65rpx" mode="widthFix" src="{{item.a}}" animation="{{item.b}}"></image></view></view>

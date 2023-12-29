@@ -1,0 +1,180 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/product/category",
+    "pages/login/login",
+    "pages/login/mplogin",
+    "pages/login/bindmobile",
+    "pages/cart/cart",
+    "pages/user/userinfo/userinfo",
+    "pages/product/list/list",
+    "pages/product/detail/detail",
+    "pages/order/confirm-order",
+    "pages/user/address/address",
+    "pages/user/index/index",
+    "pages/order/myorder",
+    "pages/order/order-detail",
+    "pages/user/my-wallet/my-wallet",
+    "pages/user/my-wallet/my-balance",
+    "pages/order/recharge",
+    "pages/user/address/add/add",
+    "pages/product/search/search",
+    "pages/order/evaluate/evaluate",
+    "pages/product/detail/look-evaluate/look-evaluate",
+    "pages/order/express/express",
+    "pages/order/refund/apply/apply",
+    "pages/order/refund/index/index",
+    "pages/order/refund/detail/detail",
+    "pages/user/address/edit/edit",
+    "components/upload/upload",
+    "pages/coupon/coupon",
+    "pages/user/my-coupon/my-coupon",
+    "pages/agent/index/index",
+    "pages/agent/apply/apply",
+    "pages/agent/cash/apply/apply",
+    "pages/agent/cash/list/list",
+    "pages/user/points/points",
+    "pages/agent/order/order",
+    "pages/agent/team/team",
+    "pages/agent/qrcode/qrcode",
+    "pages/store/address/address",
+    "pages/store/clerkorder",
+    "pages/diy-page/diy-page",
+    "pages/article/list/list",
+    "pages/article/detail/detail",
+    "pages/order/pay-success/pay-success",
+    "pages/user/my-bargain/my-bargain",
+    "pages/store/detail/detail",
+    "pages/login/weblogin",
+    "pages/order/pay-h5/pay-h5",
+    "pages/user/set/set",
+    "pages/shop/shop_list",
+    "pages/shop/register",
+    "pages/user/my_attention/my_attention",
+    "pages/user/my_collect/my_collect",
+    "pages/shop/shop",
+    "pages/user/my_shop/my_shop",
+    "pages/shop/application_status",
+    "pages/user/my_shop/my_shop_order",
+    "pages/user/my_shop/after_sale",
+    "pages/user/modify-phone/modify-phone",
+    "pages/order/deposit-pay",
+    "pages/user/my_shop/pro_admin",
+    "pages/user/my_shop/my_shop_data",
+    "pages/user/my_shop/my_shop_detail",
+    "pages/user/my_shop/my_live/notice/notice",
+    "pages/user/my_shop/my_live/add/add",
+    "pages/user/my_shop/my_live/my-live/edit",
+    "pages/user/my_shop/my_live/live/live",
+    "pages/user/my_shop/my_live/my-live/record",
+    "pages/user/my_shop/my_live/my-live/my-live",
+    "pages/user/my_shop/my_live/live-order/live-order",
+    "pages/login/openlogin",
+    "pages/order/alipay-h5/alipay-h5",
+    "pages/coupon/detail",
+    "pages/privacy/privacy",
+    "pages/webview/webview",
+    "pages/order/cashier",
+    "pages/user/cash/apply",
+    "pages/user/cash/list",
+    "pages/shop/index",
+    "pages/order/assemble-order",
+    "pages/user/evaluate/list",
+    "pages/user/my_shop/addProduct"
+  ],
+  "subPackages": [
+    {
+      "root": "pagesLive",
+      "pages": [
+        "live/index",
+        "live/live",
+        "live/live-over",
+        "live/playback"
+      ]
+    },
+    {
+      "root": "pagesPlus",
+      "pages": [
+        "chat/chat",
+        "chat/chat_list",
+        "seckill/list/list",
+        "seckill/detail/detail",
+        "assemble/list/list",
+        "assemble/detail/detail",
+        "assemble/fight-group-detail/fight-group-detail",
+        "bargain/list/list",
+        "bargain/detail/detail",
+        "bargain/haggle/haggle",
+        "signin/rule/rule",
+        "signin/signin",
+        "points/list/list",
+        "points/detail/detail",
+        "chat/supplier_chat_list",
+        "chat/supplier_chat",
+        "lottery/lottery",
+        "table/table",
+        "presale/list",
+        "task/index",
+        "lottery/WinningRecord",
+        "lottery/receive",
+        "preview/list",
+        "chat/notice_list",
+        "chat/notice"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F5F5"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#ff5a5a",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home_0.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/product/category",
+        "iconPath": "static/tabbar/category.png",
+        "selectedIconPath": "static/tabbar/category_0.png",
+        "text": "分类"
+      },
+      {
+        "pagePath": "pages/shop/shop_list",
+        "iconPath": "static/tabbar/shop.png",
+        "selectedIconPath": "static/tabbar/shop_0.png",
+        "text": "店铺"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "iconPath": "static/tabbar/cart.png",
+        "selectedIconPath": "static/tabbar/cart_0.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/user/index/index",
+        "iconPath": "static/tabbar/user.png",
+        "selectedIconPath": "static/tabbar/user_0.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "usingComponents": {
+    "header-bar": "/components/header",
+    "request-loading": "/components/jjjloading",
+    "tab-bar": "/components/tabbar/footTabbar"
+  }
+}

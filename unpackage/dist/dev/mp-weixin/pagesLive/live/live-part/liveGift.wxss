@@ -1,0 +1,140 @@
+
+.nlv_borT.data-v-4807220e {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1rpx;
+}
+.wrapgift-mask.data-v-4807220e {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+}
+.wrapgift-body.data-v-4807220e {
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+}
+.gift-head.data-v-4807220e {
+		border-color: rgba(255, 255, 255, .3);
+		border-style: solid;
+		border-bottom-width: 1rpx;
+		flex-direction: row;
+		align-items: center;
+		height: 100rpx;
+}
+.gift-menu.data-v-4807220e {
+		flex: 1;
+		flex-direction: row;
+}
+.gm-item.data-v-4807220e {
+		color: #999;
+		font-size: 32rpx;
+		margin-left: 40rpx;
+		line-height: 100rpx;
+}
+.gm-item-on.data-v-4807220e {
+		color: #fff;
+		border-color: #ff0f33;
+		border-style: solid;
+		border-bottom-width: 2px;
+}
+.gift-coins.data-v-4807220e {
+		color: #fff;
+		font-size: 28rpx;
+		flex-direction: row;
+		align-items: center;
+		padding-right: 30rpx;
+}
+.gc-coin.data-v-4807220e {
+		color: #ffffff;
+		font-size: 25rpx;
+}
+.gc-num.data-v-4807220e {
+		color: #feb719;
+		font-size: 12px;
+}
+.gc-recharge.data-v-4807220e {
+		color: #ff0f33;
+		font-size: 12px;
+		margin-left: 30rpx;
+}
+.wrap_giftlist.data-v-4807220e {
+		background-color: rgba(31, 37, 62, 1);
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		height: 700rpx;
+		position: relative;
+}
+.gift-swiper.data-v-4807220e {
+		flex: 1;
+}
+.gift__cells.data-v-4807220e {
+		flex-direction: row;
+		flex-wrap: wrap;
+}
+.giftitem.data-v-4807220e {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-top: 20rpx;
+		width: 186rpx;
+}
+.giftitem-rect.data-v-4807220e {
+		align-items: center;
+		justify-content: center;
+		height: 150rpx;
+		width: 150rpx;
+		position: relative;
+}
+.giftimg.data-v-4807220e {
+		height: 100rpx;
+		width: 100rpx;
+}
+.giftimg_active.data-v-4807220e{
+		height: 100rpx;
+		width: 100rpx;
+		transform: scale(1.2);
+}
+.giftname.data-v-4807220e {
+		color: #fff;
+		font-size: 30rpx;
+}
+.giftcoin.data-v-4807220e {
+		color: rgba(255, 255, 255, .3);
+		font-size: 22rpx;
+		margin-top: 2px;
+}
+.sendbtn.data-v-4807220e{
+}
+.btntext.data-v-4807220e{
+		width: 150rpx;
+		height: 40rpx;
+		background-color: red;
+		border-radius: 20rpx;
+		text-align: center;
+		padding: 0;
+		border-width: 0;
+		font-size: 22rpx;
+		color: #FFFFFF;
+		line-height: 40rpx;
+}
+.giftitem_active.data-v-4807220e{
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.3));
+		border-radius: 20rpx;
+}
+.giftitem_active .giftcoin.data-v-4807220e{
+		margin-top: -6rpx;
+		margin-bottom: 6rpx;
+}
+	

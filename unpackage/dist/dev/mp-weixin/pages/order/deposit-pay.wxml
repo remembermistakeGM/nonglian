@@ -1,0 +1,1 @@
+<view class="index"><view class="deposit_bg"><view class="deposit_tit">类目：<text class="gray9">{{a}}</text></view><view class="deposit_tit borderb">保证金：<text class="gray9">￥{{b}}</text></view></view><view class="pay-bt"><button class="pay-bts" bindtap="{{c}}">提交订单</button></view></view>

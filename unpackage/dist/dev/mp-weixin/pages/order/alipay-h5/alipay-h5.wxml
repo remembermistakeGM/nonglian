@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="pay-wrap"><view><rich-text nodes="{{b}}"/></view></view>

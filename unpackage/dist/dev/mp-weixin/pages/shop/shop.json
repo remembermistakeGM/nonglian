@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "店铺首页",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../components/uni-load-more"
+  }
+}

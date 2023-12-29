@@ -1,0 +1,2073 @@
+<template>
+	<div class="nlv__container" :style="'height:' + winHeight + ' ;'">
+		<preview
+			:isShow="is_preview"
+			@switchCamera="switchCamera"
+			@setBeautyOptions="setBeautyOptions"
+			@changeVirtualBackground="changeVirtualBackground"
+			@setDefinition="setDefinition"
+			@openLive="openLive"
+			@close="closePreview"
+		></preview>
+		<template v-if="!is_preview">
+			<view class="nlv_main" :style="'height:' + winHeight + ' ;'">
+				<view class="nlv-playerbox">
+					<view class="nlv_topbar" :style="{ height: headerBarH, 'padding-top': statusBarH }">
+						<view class="topbar-info">
+							<view class="avator-box">
+								<image
+									class="ta-avator"
+									@tap="openAnchor"
+									:src="
+										(roomDetail.supplier && roomDetail.supplier.logo && roomDetail.supplier.logo.file_path) ||
+											(roomDetail.user && roomDetail.user.avatarUrl) ||
+											''
+									"
+									mode="aspectFill"
+								/>
+								<view class="tabox">
+									<text class="ta-name">{{ roomDetail.supplier && roomDetail.supplier.name }}</text>
+									<text class="ta-num">{{ online_count }}观看</text>
+								</view>
+								<text class="ta-gz" :class="hasFollow ? 'ta-gz-on' : ''" @tap="followFunc()" v-if="!isCaster">{{ hasFollow ? '已关注' : '关注' }}</text>
+							</view>
+						</view>
+						<view class="topbar-right">
+							<view class="" @tap.stop="closeLive"><image class="close-btn" src="/static/live/close.png" mode=""></image></view>
+						</view>
+					</view>
+					<view class="nlv-rankbox" :style="{ top: headerBarH }">
+						<view class="nlv-rkls" @click="openRank">
+							<text class="rkitem">{{ giftName }}：{{ roomDetail.gift_num }}</text>
+						</view>
+						<view class="nlv-rkls">
+							<text class="rkitem ml30">人气值：{{ digg_num }}</text>
+						</view>
+					</view>
+					<view class="nlv-footToolbar">
+						<!-- 底部 -->
+						<view class="nlv-infobox">
+							<view class="nlv-giftTipPanel" v-if="giftInfo.nickName != ''">
+								<view class="giftip-item">
+									<image class="gt-avator" :src="giftInfo.avatarUrl" mode="aspectFill" />
+									<view class="gt-info">
+										<text class="gt-tit">{{ giftInfo.nickName }}</text>
+										<text class="gt-subtit">送主播{{ giftInfo.giftName }}</text>
+									</view>
+									<image class="gt-gift" :src="giftInfo.giftImage" mode="aspectFill" />
+								</view>
+							</view>
+							<!-- 弹幕 -->
+							<scroll-view class="nlv-rollMsgPanel" :scroll-into-view="toMsg" scroll-y show-scrollbar="false">
+								<!-- <view class="nlv-msglist"> -->
+								<view class="msg_bg" :id="'comment' + index" v-for="(item, index) in commentsList" :key="index">
+									<view class="msg_text pr" v-if="item.type == 'text'">
+										<text class="msg_txt">{{ ' ' + item.nickName }}:{{ item.msg }}</text>
+										<view class=" msg-text-name">
+											<text class="msg_name">{{ ' ' + item.nickName }}:</text>
+										</view>
+									</view>
+									<view class="msg_text  pr" v-if="item.type == 'enter'">
+										<text class="msg_txt">{{ item.nickName }}来了</text>
+									</view>
+									<view class="msg_text  pr" v-if="item.type == 'join'">
+										<text class="msg_txt">{{ ' ' + item.nickName }}来了</text>
+										<view class="msg-text-name ">
+											<text class="msg_name">{{ ' ' + item.nickName }}</text>
+										</view>
+									</view>
+								</view>
+								<!-- </view> -->
+							</scroll-view>
+							<view class="d-b-c f-d-i ww100" style="width: 700rpx;">
+								<view class="nlv_reply d-b-c f-d-i" @tap.stop="handleRollMsg()">
+									<text class="nlv_reply_text">说点什么...</text>
+									<!-- #ifdef APP-PLUS -->
+									<text class="icon iconfont icon-xiaolian">&#xe75a;</text>
+									<!-- <text class="icon iconfont icon-yunyingguanli">&#xe614;</text> -->
+									<!-- #endif -->
+								</view>
+								<view class="nlv_btntool">
+									<!-- #ifdef APP-PLUS -->
+									<button class="btn-toolitem" @tap.stop="openShare"><image class="btn-icon-img" src="/static/live/fx.png" mode=""></image></button>
+									<view class="btn-toolitem" @tap.stop="handleLiveCart()"><image class="btn-icon-img" src="/static/live/gwc.png" mode=""></image></view>
+									<view class="btn-toolitem" v-if="isCaster" @tap.stop="openMore"><image class="btn-icon-img" src="/static/live/gd.png" mode=""></image></view>
+									<view class="btn-toolitem" @tap="handleLiveGift" v-if="!isCaster"><image class="btn-icon-img" src="/static/live/ax.png" mode=""></image></view>
+									<!-- #endif -->
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<!--商品-->
+				<div class="product" v-if="explain_product != null" @tap="gotoProduct">
+					<div class="product-pic"><image :src="explain_product.product_image" class="product-img"></image></div>
+					<div class="product-price">
+						<text class="f24 rose">￥</text>
+						<text class="rose f28">{{ explain_product.product_price }}</text>
+					</div>
+				</div>
+				<share :winHeight="winHeight" v-if="qrcode != null" :qrcode="qrcode" @close="closeShare"></share>
+			</view>
+		</template>
+		<Likes ref="likes" v-if="engine_load && showLike"></Likes>
+		<live-cart
+			ref="liveCart"
+			:isCaster="isCaster"
+			:shop_supplier_id="roomDetail.supplier.shop_supplier_id"
+			:room_id="room_id"
+			@openOrder="openOrder"
+			@setProduct="setProduct"
+		/>
+		<live-gift ref="liveGift" :room_id="room_id" :giftName="giftName" :giftList="giftList" @openPlan="openPlan" @sendGift="sendGift" />
+		<live-msg ref="liveMsg" :emojiData="emojiData" @closeMsg="sendChannelMsg" />
+		<live-plan ref="livePlan" @closePlan="closePlan" :giftName="giftName" />
+		<live-order ref="liveOrder" :shop_supplier_id="roomDetail.supplier.shop_supplier_id" :room_id="room_id" @closeOrder="closeOrder" />
+		<live-anchor ref="liveAnchor" :room_id="room_id" :shop_supplier_id="roomDetail.supplier.shop_supplier_id" @changeFollow="changeFollow" />
+		<live-more ref="liveMore" @liveSet="liveSet" @switchCamera="switchCamera" />
+		<live-share ref="liveShare" @livePoster="livePoster" />
+		<live-rank ref="liveRank" :room_id="room_id" />
+		<!-- app分享 -->
+		<AppShare ref="appShare" :appParams="appParams"></AppShare>
+		<AgoraView @click.stop="digg" v-if="platform == 'android'" ref="agoraView" :style="'width:750rpx;height:' + winHeight"></AgoraView>
+		<Agora-RTC-SurfaceView
+			@click.stop="digg"
+			v-if="engine_load && platform == 'ios'"
+			:style="'width:750rpx;height:' + winHeight"
+			:zOrderMediaOverlay="zOrderMediaOverlay"
+			:zOrderOnTop="zOrderOnTop"
+			:renderMode="renderMode"
+			:data="{ uid: view_uid, channelId: liveChannelId }"
+			:mirrorMode="mirrorMode"
+		></Agora-RTC-SurfaceView>
+		<AgoraRtm style="width: 0px;height: 0px;" v-if="platform == 'android'" ref="agoraRtm"></AgoraRtm>
+	</div>
+</template>
+
+<script>
+// #ifdef APP-PLUS
+import agoraRtc from '@/common/agoraRtc.js';
+import agoraRtm from '@/common/agoraRtm.js';
+const globalEvent = uni.requireNativePlugin('globalEvent');
+// #endif
+const Prefix_RTC = 'io.agora.rtc.';
+const Prefix_RTM = 'io.agora.rtm.';
+import utils from '@/common/utils.js';
+import liveCart from './live-part/liveCart';
+import liveGift from './live-part/liveGift';
+// import liveRoom from './live-part/liveRoom';
+import liveMsg from './live-part/liveMsg';
+import livePlan from './live-part/livePlan';
+import liveOrder from './live-part/liveOrder';
+import liveAnchor from './live-part/liveAnchor';
+import liveMore from './live-part/liveMore';
+import liveShare from './live-part/liveShare';
+import liveRank from './live-part/liveRank';
+import Likes from './live-part/likes/index';
+import share from './live-part/dialog/share';
+import emoji from './live-part/emoji.js';
+import Countdown from './live-part/countdown_nvue';
+import AppShare from './live-part/app-nvue-share';
+import * as permision from '@/common/permission.js';
+import preview from './preview.nvue';
+let timer = null;
+export default {
+	components: {
+		liveCart,
+		liveGift,
+		// liveRoom,
+		liveMsg,
+		livePlan,
+		liveOrder,
+		liveAnchor,
+		liveMore,
+		liveShare,
+		liveRank,
+		Likes,
+		share,
+		Countdown,
+		AppShare,
+		preview
+	},
+	data() {
+		return {
+			statusBarH: '',
+			headerBarH: '',
+			winHeight: '',
+			winWidth: '',
+			videoIndex: 0,
+			clickNum: 0, //记录点击次数
+			giftipShowist: [],
+			sence: '', //场景，create:主播，观众
+			room_id: 0, //房间id,
+			shop_supplier_id: 0,
+			role: '',
+			loading: true,
+			/*消息列表*/
+			commentsList: [],
+			maxCommentSize: 100,
+			roomDetail: {
+				supplier: {
+					shop_supplier_id: 0
+				}
+			},
+			giftName: '',
+			/*礼物数*/
+			gift_num: 0,
+			hasFollow: false,
+			giftList: [],
+			//是否是主播
+			isCaster: false,
+			// 当前用户
+			user: {},
+			// 礼物信息
+			giftInfo: {
+				nickName: '',
+				avatarUrl: '',
+				giftName: '',
+				giftImage: ''
+			},
+			/*当前讲解商品ID*/
+			explain_product_id: '',
+			/*当前讲解商品*/
+			explain_product: null,
+			num: 0,
+			digg_num: 0,
+			digg_times: 5,
+			digg_timer: null,
+			is_replay: false,
+			replay_url: '',
+			is_start: false,
+			qrcode: null,
+			toMsg: '',
+			emojiData: [],
+			/*倒计时配置*/
+			countdownConfig: {
+				/*开始时间*/
+				startstamp: 0,
+				/*结束时间*/
+				endstamp: 0,
+				/*标题*/
+				title: ''
+			},
+			/*app分享*/
+			isAppShare: false,
+			appParams: {
+				title: '',
+				summary: '',
+				path: ''
+			},
+			zOrderMediaOverlay: false,
+			zOrderOnTop: false,
+			renderMode: 1, //Hidden= 1, Fit = 2 ,Adaptive = 3, FILL = 4
+			mirrorMode: 0, //Auto = 0, Enabled = 1, Disabled = 2
+			engine_load: false,
+			/*美白*/
+			whiteness: 5,
+			beauty: 5,
+			// 用户信息
+			userInfo: {},
+			// RTC房间频道
+			channel: '',
+			view_uid: 0,
+			agoraView: null,
+			agoraRtm: null,
+			platform: '',
+			agoraAppId: '',
+			appId: '',
+			uid: '',
+			liveChannelId: '',
+			token: '',
+			nickName: '',
+			beautyOptions: {
+				enabled: true,
+				contrastLevel: 1,
+				lightening: 0.6,
+				smoothness: 0.5,
+				redness: 0.1,
+				sharpness: 0.3
+			},
+			is_preview: false,
+			isExplain: false,
+			explain: {},
+			online_count: 0,
+			intervalTime: null
+		};
+	},
+	beforeCreate() {
+		// #ifdef APP-PLUS
+		const domModule = weex.requireModule('dom');
+		domModule.addRule('fontFace', {
+			fontFamily: 'iconfont',
+			src: "url('" + getApp().font_url + "')"
+		});
+		// #endif
+	},
+	created() {
+		console.log('------live created');
+		this.platform = uni.getSystemInfoSync().platform;
+		let _sH = uni.getSystemInfoSync().statusBarHeight;
+		let _hH = _sH + 50;
+		let _wH = uni.getSystemInfoSync().windowHeight;
+		let _wW = uni.getSystemInfoSync().windowWidth;
+		this.statusBarH = `${_sH}px`;
+		this.headerBarH = `${_hH}px`;
+		this.winHeight = `${_wH}px`;
+		this.winWidth = `${_wW}px`;
+	},
+	/*分享*/
+	onShareAppMessage() {
+		let self = this;
+		// 构建页面参数
+		let params = self.getRequest().getShareUrlParams({
+			room_id: self.room_id,
+			sence: 'audience'
+		});
+		return {
+			title: self.roomDetail.name,
+			path: '/pagesLive/live/live?' + params,
+			imageUrl: self.roomDetail.shareFilePath
+		};
+	},
+	onLoad(options) {
+		uni.setKeepScreenOn({
+			keepScreenOn: true
+		});
+		let scene = utils.getSceneData(options);
+		this.room_id = options.room_id ? options.room_id : scene.rid;
+		this.role = options.sence == 'create' ? 'broadcaster' : 'audience';
+	},
+	onReady() {},
+	/**
+	 * 生命周期函数--监听页面卸载
+	 */
+	onUnload: function() {
+		// this.is_start && this.$refs.liveRoom.clear();
+	},
+	onShow() {
+		// if (this.$refs.liveRoom) {
+		// 	this.$refs.liveRoom.show();
+		// }
+	},
+	mounted() {
+		let self = this;
+		console.log('-------agora-sdk---------------' + uni.getSystemInfoSync().platform);
+		if (self.platform === 'android') {
+			permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+			permision.requestAndroidPermission('android.permission.CAMERA');
+			self.agoraView = self.$refs.agoraView;
+			self.agoraRtm = self.$refs.agoraRtm;
+		} else if (self.platform === 'ios') {
+			//permision.judgeIosPermission('camera');
+			//permision.judgeIosPermission('record');
+			self.agoraView = agoraRtc;
+			self.agoraRtm = agoraRtm;
+		}
+		self.uid = self.getRequest().getUserId();
+		this.getRoomInfo();
+	},
+	methods: {
+		/*请求对象*/
+		getRequest() {
+			let self = this;
+			// #ifdef APP-PLUS
+			return getApp().globalData.vueObj;
+			// #endif
+			// #ifndef APP-PLUS
+			return self;
+			// #endif
+		},
+		/*获取直播间信息*/
+		getRoomInfo() {
+			let self = this;
+			uni.showLoading({
+				title: '正在进入'
+			});
+			self.getRequest()._post(
+				'plus.live.room/detail',
+				{
+					room_id: self.room_id
+				},
+				function(res) {
+					console.log('获取房间');
+					console.log(res.data);
+					uni.hideLoading();
+					self.loading = false;
+					self.roomDetail = res.data.model;
+					self.giftName = res.data.gift_name;
+					self.hasFollow = res.data.hasFollow;
+					self.digg_num = res.data.model.digg_num;
+					self.countdownConfig.endstamp = self.roomDetail.start_time;
+					self.user = res.data.user;
+					self.isCaster = res.data.isCaster;
+					if (self.isCaster) {
+						self.view_uid = 0;
+					} else {
+						self.view_uid = res.data.model.user_id;
+					}
+					self.liveRoomStart(self.roomDetail, self.user);
+					self.$nextTick(() => {
+						self.initProduct();
+					});
+				}
+			);
+		},
+		liveRoomStart(roomDetail, userInfo) {
+			console.log('--------------liveRoomStart-----------------');
+			let self = this;
+			self.roomDetail = roomDetail;
+			self.userInfo = userInfo;
+			self.channel = 'channel_' + roomDetail.supplier.shop_supplier_id; //shopSupplierId
+			self.liveChannelId = 'channel_' + roomDetail.supplier.shop_supplier_id;
+			if (self.isCaster) {
+				let whiteness = uni.getStorageSync('whiteness');
+				if (whiteness) {
+					self.whiteness = whiteness;
+				}
+				let beauty = uni.getStorageSync('beauty');
+				if (beauty) {
+					self.beauty = beauty;
+				}
+			} else {
+				//观众
+				console.log('观众进入');
+			}
+			self.loginRoom();
+		},
+		loginRoom() {
+			let self = this;
+			uni.showLoading({
+				title: '正在进入'
+			});
+			self.getRequest()._get(
+				'plus.live.agora.api/login',
+				{
+					room_id: self.roomDetail.room_id,
+					channel: self.channel
+				},
+				function(res) {
+					console.log('进入房间');
+					console.log(res.data);
+					self.appId = res.data.appId;
+					self.agoraAppId = res.data.appId;
+					self.token = res.data.userSign;
+					self.nickName = res.data.user.nickName;
+					if (self.roomDetail.live_status == 0) {
+						self.getRequest().showError('直播审核中', function() {
+							uni.navigateBack();
+						});
+						return;
+					}
+					// 判断是否是主播
+					if (self.isCaster) {
+						if (self.uid != self.roomDetail.user_id) {
+							self.getRequest().showError('你不是此房间主播', function() {
+								uni.navigateBack();
+							});
+							return;
+						}
+					} else {
+						// 直播未开始
+						if (self.roomDetail.live_status == 102) {
+							self.getRequest().showError('直播未开始', function() {
+								uni.navigateBack();
+							});
+							return;
+						}
+					}
+					// 已结束或已过期
+					if (self.roomDetail.live_status == 103 || self.roomDetail.live_status == 107) {
+						self.getRequest().showError('直播已结束', function() {
+							uni.navigateBack();
+						});
+						return;
+					}
+					self.initRoom();
+					self.agoraView.create(
+						{
+							appid: self.agoraAppId
+						},
+						res => {
+							self.engine_load = true;
+							self.showLike = true;
+							console.log('create---------');
+							// 预览
+							if (self.isCaster) {
+								self.is_preview = true;
+								console.log(self.roomDetail.live_status);
+								// self.startPreview();
+								// 如果未开始，则预览，已开始直接进入房间
+								if (self.roomDetail.live_status == 102) {
+									self.startPreview();
+								} else {
+									self.openLive();
+								}
+							} else {
+								// 进入房间
+								self.enterRoom();
+							}
+							self.addRtcListeners();
+						}
+					);
+				}
+			);
+		},
+		/* 关闭预览 */
+		closePreview() {
+			uni.navigateBack();
+			// this.is_preview = false;
+		},
+		/* 摄像头切换 */
+		switchCamera() {
+			let self = this;
+			self.agoraView.switchCamera(res => {
+				console.log('--------------------switchCamera-------------------');
+			});
+		},
+		/* 美颜设置 */
+		setBeautyOptions(e) {
+			console.log('setBeautyOptions' + e);
+			if (e == 'set') {
+				let lightening = uni.getStorageSync('lightening');
+				if (lightening) {
+					this.beautyOptions.lightening = lightening;
+				} else {
+					uni.setStorageSync('smoothness', this.beautyOptions.lightening);
+				}
+				let smoothness = uni.getStorageSync('smoothness');
+				if (smoothness) {
+					this.beautyOptions.smoothness = smoothness;
+				} else {
+					uni.setStorageSync('smoothness', this.beautyOptions.smoothness);
+				}
+				let redness = uni.getStorageSync('redness');
+				if (redness) {
+					this.beautyOptions.redness = redness;
+				} else {
+					uni.setStorageSync('redness', this.beautyOptions.redness);
+				}
+				let sharpness = uni.getStorageSync('sharpness');
+				if (sharpness) {
+					this.beautyOptions.sharpness = sharpness;
+				} else {
+					uni.setStorageSync('sharpness', this.beautyOptions.sharpness);
+				}
+			} else {
+				// 重置
+				this.beautyOptions.lightening = 0.6;
+				uni.setStorageSync('lightening', this.beautyOptions.lightening);
+				this.beautyOptions.smoothness = 0.5;
+				uni.setStorageSync('smoothness', this.beautyOptions.smoothness);
+				this.beautyOptions.redness = 0.1;
+				uni.setStorageSync('redness', this.beautyOptions.redness);
+				this.beautyOptions.sharpness = 0.3;
+				uni.setStorageSync('sharpness', this.beautyOptions.sharpness);
+			}
+			this.agoraView.setBeautyEffectOptions(this.beautyOptions);
+		},
+		setDefinition(e) {
+			console.log('setDefinition=' + e);
+			let self = this;
+			uni.setStorageSync('vd', e);
+			self.agoraView.setVideoEncoderConfiguration(
+				{
+					vd: e
+				},
+				res => {
+					console.log('setVideoEncoderConfiguration');
+				}
+			);
+		},
+		startPreview() {
+			let self = this;
+			self.agoraView.enableVideo(res => {});
+			if (self.platform == 'android') {
+				self.agoraView.setupLocalVideo(
+					{
+						channelName: self.liveChannelId,
+						uid: self.uid
+					},
+					res => {
+						console.log('setupLocalVideo');
+					}
+				);
+			}
+			self.setBeautyOptions();
+			// 清晰度
+			let vd = uni.getStorageSync('vd');
+			if (!vd) {
+				vd = 0;
+			}
+			self.setDefinition(vd);
+			self.agoraView.startPreview(res => {
+				console.log('--------------------startPreview-------------------');
+			});
+		},
+		// 房主登录
+		rtmLogin() {
+			let self = this;
+			let agoraRtm = self.agoraRtm;
+			agoraRtm.createInstance(
+				{
+					appid: self.agoraAppId
+				},
+				res => {
+					console.log('-------------rtmLogin createInstance--------');
+				}
+			);
+			self.addRtmListeners();
+			self.getRequest()._get(
+				'plus.live.agora.api/rtmToken',
+				{
+					room_id: self.roomDetail.room_id
+				},
+				function(res) {
+					console.log('-------------rtmToken--------');
+					console.log(res);
+					agoraRtm.login(
+						{
+							token: res.data.userSign,
+							uid: '' + self.uid
+						},
+						res => {
+							console.log('-------------agoraRtm login--------');
+						}
+					);
+				},
+				err => {
+					console.log(err);
+				}
+			);
+		},
+		addRtmListeners() {
+			let self = this;
+			if (self.platform === 'ios') {
+				globalEvent.addEventListener(Prefix_RTM + 'ConnectionStateChanged', function(e) {
+					if (e.data[0] == 3 && e.data[1] == 2) {
+						self.onLoginSuccess();
+					}
+				});
+			}
+			globalEvent.addEventListener(Prefix_RTM + 'MessageReceived', function(e) {
+				self.showMsg(e.data[0]);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'LoginSuccess', function(e) {
+				console.log('RTM LoginSuccess');
+				self.onLoginSuccess();
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'LoginFailure', function(e) {
+				self.onLoginFailure(e);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'LogoutSuccess', function(e) {
+				self.onLogoutSuccess(e);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'LogoutFailure', function(e) {
+				self.onLogoutFailure(e);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'ChannelMessageReceived', function(e) {
+				self.onChannelMessageReceived(e);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'JoinSuccess', function(e) {
+				self.onJoinSuccess(e);
+			});
+			globalEvent.addEventListener(Prefix_RTM + 'JoinFailure', function(e) {
+				self.onJoinFailure(e);
+			});
+		},
+		// ios事件注册
+		addRtcListeners() {
+			console.log('----------------addRtcListeners-------------------');
+			let self = this;
+			globalEvent.addEventListener(Prefix_RTC + 'JoinChannelSuccess', function(e) {
+				self.onJoinChannelSuccess(e);
+			});
+			globalEvent.addEventListener(Prefix_RTC + 'LeaveChannel', function(e) {
+				self.onLeaveChannel(e);
+			});
+			globalEvent.addEventListener(Prefix_RTC + 'RemoteVideoStateChanged', function(e) {
+				self.onRemoteVideoStateChanged(e);
+			});
+			globalEvent.addEventListener(Prefix_RTC + 'UserJoined', function(e) {
+				self.onUserJoined(e);
+			});
+			globalEvent.addEventListener(Prefix_RTC + 'UserOffline', function(e) {
+				self.onUserOffline(e);
+			});
+		},
+		enterRoom() {
+			let self = this;
+			self.agoraView.setChannelProfile(1, res => {});
+			self.agoraView.setClientRole(2, res => {});
+			self.agoraView.enableAudio(res => {});
+			self.agoraView.enableVideo(res => {});
+			if (self.platform == 'android') {
+				self.agoraView.setupRemoteVideo(
+					{
+						channelName: self.liveChannelId,
+						uid: self.view_uid
+					},
+					res => {}
+				);
+			}
+			self.agoraView.joinChannel(
+				{
+					token: self.token,
+					channelName: self.liveChannelId,
+					uid: self.uid
+				},
+				res => {
+					console.log('--------------------joinChannel enterRoom-------------------');
+				},
+				err => {
+					console.log('--------------------joinChannel enterRoom-------------------');
+				}
+			);
+		},
+		openLive() {
+			let self = this;
+			let agoraView = self.agoraView;
+			// 可以开启成功后关闭
+			if (self.is_preview) {
+				self.is_preview = false;
+				agoraView.stopPreview(res => {
+					console.log('--------------------stopPreview-------------------');
+				});
+			}
+			agoraView.setChannelProfile(1, res => {});
+			agoraView.setClientRole(1, res => {});
+			agoraView.enableAudio(res => {});
+			agoraView.enableVideo(res => {});
+			// 是否启用视频
+			if (self.platform == 'android') {
+				agoraView.setupLocalVideo(
+					{
+						channelName: self.liveChannelId,
+						uid: self.uid
+					},
+					res => {
+						console.log('setupLocalVideo');
+					}
+				);
+			}
+			console.log('self.liveChannelId=' + self.liveChannelId);
+			console.log('self.token=' + self.token);
+			console.log('self.uid=' + self.uid);
+			agoraView.joinChannel(
+				{
+					token: self.token,
+					channelName: self.liveChannelId,
+					uid: self.uid
+				},
+				res => {
+					console.log('--------------------joinChannel-------------------');
+					console.log(res);
+				}
+			);
+		},
+		initRoom() {
+			this.getGift();
+			this.initemoji();
+		},
+		/*显示讲解的商品*/
+		showProduct(product_id) {
+			let self = this;
+			self.explain_product_id = product_id;
+			self.getRequest()._post(
+				'plus.live.room/product_detail',
+				{
+					product_id: self.explain_product_id
+				},
+				function(res) {
+					self.explain_product = res.data.model;
+					console.log(self.explain_product);
+				}
+			);
+		},
+		/*获取直播间信息*/
+		synRoomInfo(e) {
+			let self = this;
+			self.getRequest()._post(
+				'plus.live.room/syn_room',
+				{
+					room_id: self.roomDetail.room_id
+				},
+				function(res) {
+					// 发送通知
+					let msg = {
+						type: 'views',
+						views: res.data.model.views,
+						digg_num: res.data.model.digg_num
+					};
+					self.sendMsg(JSON.stringify(msg));
+				}
+			);
+		},
+		initProduct() {
+			if (this.roomDetail.currentProduct) {
+				this.explain_product = {
+					product_image: this.roomDetail.currentProduct.image[0].file_path,
+					product_price: this.roomDetail.currentProduct.product_price,
+					product_id: this.roomDetail.currentProduct.product_id
+				};
+			}
+			console.log('--------explain_product-------------');
+			console.log(this.explain_product);
+		},
+		/*跳转商品详情*/
+		gotoProduct(e) {
+			let url = '/pages/product/detail/detail?product_id=' + this.explain_product.product_id + '&room_id=' + this.room_id;
+			uni.navigateTo({
+				url: url
+			});
+		},
+		handleSlider(e) {
+			let curIndex = e.detail.current;
+			if (this.videoIndex >= 0) {
+				this.videoContextList[this.videoIndex].pause();
+				this.videoContextList[this.videoIndex].seek(0);
+			}
+			if (curIndex === this.videoIndex + 1) {
+				this.videoContextList[this.videoIndex + 1].play();
+			} else if (curIndex === this.videoIndex - 1) {
+				this.videoContextList[this.videoIndex - 1].play();
+			}
+			this.videoIndex = curIndex;
+		},
+		play(index) {
+			this.videoContextList[index].play();
+		},
+		pause(index) {
+			this.videoContextList[index].pause();
+		},
+		handleAttention(index) {
+			let vlist = this.vlist;
+			vlist[index].attention = !vlist[index].attention;
+			this.vlist = vlist;
+		},
+		handleLiveCart() {
+			this.$refs.liveCart.show();
+		},
+		handleLiveGift() {
+			this.$refs.liveGift.show();
+		},
+		handleRollMsg() {
+			this.$refs.liveMsg.show();
+		},
+		sendChannelMsg(e) {
+			let msg = {
+				type: 'text',
+				msg: e,
+				registerLevel: this.registerLevel,
+				nickName: this.nickName
+			};
+			this.sendMsg(msg);
+		},
+		closeMsg(e) {
+			let self = this;
+			let msg = {
+				type: 'text',
+				msg: e,
+				nickName: self.user.nickName
+			};
+			self.sendMsg(JSON.stringify(msg));
+		},
+		removeComment() {
+			let self = this;
+			let len = self.commentsList.length - self.maxCommentSize;
+			if (len > 0) {
+				for (let i = 0; i < len; i++) {
+					self.commentsList.shift();
+				}
+			}
+			self.$nextTick(function() {
+				self.toMsg = 'comment' + (self.commentsList.length - 1);
+			});
+		},
+		/*获取礼物类别*/
+		getGift() {
+			let self = this;
+			self.getRequest()._get('plus.live.room/gift', {}, function(res) {
+				console.log('====gift=======');
+				console.log(res);
+				let list = [],
+					min = [],
+					num = 0;
+				for (let i = 0; i < res.data.list.length; i++) {
+					num++;
+					min.push(res.data.list[i]);
+					if (num >= 8) {
+						list.push(min);
+						min = [];
+						num = 0;
+					}
+				}
+				if (min.length > 0) {
+					list.push(min);
+				}
+				self.giftList = list;
+				console.log(self.giftList);
+			});
+		},
+
+		openPlan() {
+			this.$refs.livePlan.show();
+		},
+		closePlan() {
+			this.$refs.liveGift.show();
+		},
+		openOrder() {
+			this.$refs.liveOrder.show();
+		},
+		closeOrder() {
+			this.$refs.liveCart.show();
+		},
+		setProduct(e) {
+			console.log('explainProduct');
+			console.log(e);
+			if (e == null) {
+				this.isExplain = false;
+				this.explain = {};
+			} else {
+				this.isExplain = true;
+				this.explain = e;
+			}
+			let msg = {
+				type: 'explain',
+				explain: this.explain,
+				isExplain: this.isExplain
+			};
+			this.sendMsg(msg);
+		},
+		sendMsg(msg) {
+			let self = this;
+			// 发送去购买消息
+			let agoraRtm = self.agoraRtm;
+			let message = JSON.stringify(msg);
+			console.log('------------------message----------------------');
+			console.log(message);
+			agoraRtm.sendMessage(
+				{
+					message: message
+				},
+				res => {
+					console.log(message);
+					self.showMsg(message);
+				},
+				fail => {
+					console.log(fail);
+				}
+			);
+		},
+		digg() {
+			console.log('点击屏幕');
+			if (this.isCaster) {
+				return;
+			}
+			let self = this;
+			self.$refs.likes.handleClick();
+			console.log('----------digg---------------');
+			self.getRequest()._post(
+				'plus.live.room/digg',
+				{
+					room_id: self.room_id,
+					num: 1
+				},
+				function(res) {
+					console.log('----------digg---------------');
+					let digg_num = res.data;
+					let msg = {
+						type: 'digg',
+						digg_num: digg_num
+					};
+					self.sendMsg(msg);
+				}
+			);
+		},
+		showMsg(msg) {
+			let self = this;
+			let json = JSON.parse(msg);
+			console.log(json);
+			// 文本消息
+			if (json.type == 'text' || json.type == 'buy' || json.type == 'join' || json.type == 'enter') {
+				self.commentsList.push(json);
+				self.removeComment();
+			} else if (json.type == 'digg') {
+				console.log('digg');
+				// 点赞
+				self.digg_num = json.digg_num.digg_num;
+				console.log(self.digg_num);
+			} else if (json.type == 'banSay' && self.uid == json.user_id) {
+				self.isbanSay = true;
+				// 禁言
+				uni.showToast({
+					title: '您已被禁言',
+					icon: 'none'
+				});
+				return;
+			} else if (json.type == 'gift_num') {
+				self.roomDetail.gift_num = json.msg;
+			} else if (json.type == 'gift') {
+				self.giftInfo = {
+					nickName: json.nickName,
+					avatarUrl: json.avatarUrl,
+					giftName: self.getGiftName(json.msg),
+					giftImage: self.getGiftImage(json.msg)
+				};
+				setTimeout(function() {
+					self.giftInfo = {
+						nickName: ''
+					};
+				}, 5000);
+			} else if (json.type == 'kickPerson' && self.uid == json.user_id) {
+				// 踢出
+				uni.showToast({
+					title: '您已被踢出直播间',
+					icon: 'none'
+				});
+				self.closeLive();
+			} else if (json.type == 'openSay' && self.uid == json.user_id) {
+				// 踢出
+				uni.showToast({
+					title: '您已被取消禁言',
+					icon: 'none'
+				});
+				self.isbanSay = false;
+				return;
+			} else if (json.type == 'openPerson' && self.uid == json.user_id) {
+				// 踢出
+				uni.showToast({
+					title: '您已被取消踢出直播间',
+					icon: 'none'
+				});
+			} else if (json.type == 'explain') {
+				// 显示讲解
+				this.explain = json.explain;
+				this.isExplain = json.isExplain;
+				this.showProduct(json.explain);
+				this.showLike = false;
+				this.showLike = true;
+			}
+		},
+		/*关注*/
+		followFunc() {
+			let self = this;
+			self.getRequest()._post(
+				'user.favorite/add',
+				{
+					shop_supplier_id: self.roomDetail.supplier.shop_supplier_id,
+					pid: self.roomDetail.supplier.shop_supplier_id,
+					type: 10
+				},
+				function(res) {
+					console.log(res);
+					self.hasFollow = !self.hasFollow;
+				}
+			);
+		},
+		openAnchor() {
+			this.$refs.liveAnchor.show();
+		},
+		changeFollow(e) {
+			this.hasFollow = e;
+		},
+		openMore() {
+			this.$refs.liveMore.show();
+		},
+		openShare(e) {
+			let self = this;
+			//#ifndef APP-PLUS
+			self.$refs.liveShare.show();
+			//#endif
+			//#ifdef APP-PLUS
+			self.appParams.title = self.roomDetail.name;
+			self.appParams.summary = self.roomDetail.name;
+			// 构建页面参数
+			let params = self.getRequest().getShareUrlParams({
+				room_id: self.room_id,
+				sence: 'audience'
+			});
+			self.appParams.path = '/pagesLive/live/live?' + params;
+			self.appParams.image = self.roomDetail.shareFilePath;
+			self.$refs.appShare.show();
+			//#endif
+		},
+		/*直播设置*/
+		liveSet(e) {
+			this.$refs.liveRoom.liveSet(e);
+		},
+
+		openRank() {
+			this.$refs.liveRank.show();
+		},
+		/*发送礼物*/
+		sendGift(e) {
+			let self = this;
+			let msg_arr = e.split(',');
+			let msg = {
+				type: 'gift',
+				msg: msg_arr[0],
+				nickName: self.user.nickName,
+				avatarUrl: self.user.avatarUrl
+			};
+			self.sendMsg(msg);
+			let show_msg = {
+				type: 'gift_num',
+				msg: msg_arr[1]
+			};
+			self.sendMsg(show_msg);
+		},
+		/*礼物转换*/
+		getGiftName(id) {
+			let name = '';
+			for (let key in this.giftList) {
+				for (let i = 0; i < this.giftList[key].length; i++) {
+					let item = this.giftList[key][i];
+					if (parseInt(id) === item.gift_id) {
+						name = item.gift_name;
+						console.log(name);
+						break;
+					}
+				}
+			}
+			return name;
+		},
+		/*礼物转换*/
+		getGiftImage(id) {
+			let url = '';
+			for (let key in this.giftList) {
+				for (let i = 0; i < this.giftList[key].length; i++) {
+					let item = this.giftList[key][i];
+					if (parseInt(id) === item.gift_id) {
+						url = item.file_path;
+						break;
+					}
+				}
+			}
+			return url;
+		},
+		livePoster() {
+			let self = this;
+			uni.showLoading({
+				title: '加载中'
+			});
+			let source = 'wx';
+			//#ifdef H5
+			source = 'mp';
+			//#endif
+			self.getRequest()._get(
+				'plus.live.Room/poster',
+				{
+					room_id: self.room_id,
+					source: source
+				},
+				result => {
+					self.qrcode = result.data.qrcode;
+				},
+				null,
+				() => {
+					uni.hideLoading();
+				}
+			);
+		},
+		/**/
+		closeShare() {
+			this.qrcode = null;
+		},
+		
+		initemoji() {
+			let page = Math.ceil(emoji.length / 21);
+			for (let i = 0; i < page; i++) {
+				this.emojiData[i] = [];
+				for (let k = 0; k < 21; k++) {
+					emoji[i * 21 + k] ? this.emojiData[i].push(emoji[i * 21 + k]) : '';
+				}
+			}
+			console.log('initemoji:success');
+		},
+		goBack() {
+			uni.redirectTo({
+				url: '/pagesLive/live/index'
+			});
+		},
+		closeLive() {
+			let self = this;
+			// 结束录制、跳到直播结束页
+			if (self.isCaster) {
+				uni.showModal({
+					title: '提示',
+					content: '确定要结束当前直播吗?',
+					success: function(o) {
+						if (o.confirm) {
+							// 停止录制
+							self.getRequest()._get(
+								'plus.live.agora.api/record_stop',
+								{
+									room_id: self.room_id
+								},
+								function(res) {
+									console.log('record_stop');
+								}
+							);
+							// 结束
+
+							self.getRequest()._post(
+								'plus.live.room/set_status',
+								{
+									room_id: self.room_id,
+									status: 103
+								},
+								function(res) {
+									console.log('set_status');
+									self.leaveChannel('auto');
+								}
+							);
+						}
+					}
+				});
+			} else {
+				self.leaveChannel('auto');
+			}
+		},
+		onJoinChannelSuccess(e) {
+			let self = this;
+			console.log('------------onJoinChannelSuccess---------------');
+			// 登录IM
+			self.rtmLogin();
+			// 如果是主播，请求录制
+			if (self.isCaster) {
+				self.getRequest()._post(
+					'plus.live.room/set_status',
+					{
+						room_id: self.room_id,
+						status: 101
+					},
+					function(res) {},
+					err => {
+						console.log(err);
+					}
+				);
+				self.getRequest()._post(
+					'plus.live.agora.api/record_acquire',
+					{
+						room_id: self.roomDetail.room_id
+					},
+					function(res) {
+						console.log('--------record_acquire-----------');
+						console.log(res);
+						self.getRequest()._post(
+							'plus.live.agora.api/record_start',
+							{
+								room_id: self.roomDetail.room_id
+							},
+							function(res) {
+								setTimeout(function() {
+									self.getRequest()._post(
+										'plus.live.agora.api/record_query',
+										{
+											room_id: self.roomDetail.room_id
+										},
+										function(res) {
+											console.log('--------record_query-----------');
+											console.log(res);
+										}
+									);
+								}, 30000);
+							}
+						);
+					}
+				);
+			}
+		},
+		onLeaveChannel(e) {
+			console.log('-------------onLeaveChannel---------------');
+		},
+		onRemoteVideoStateChanged(e) {
+			console.log('-------------onRemoteVideoStateChanged---------------');
+		},
+		onUserJoined(e) {
+			console.log('-------------onUserJoined---------------');
+		},
+		onUserOffline(e) {
+			// 主播离线
+			console.log('-------------onUserOffline---------------');
+			this.leaveChannel('over');
+		},
+		leaveChannel(type) {
+			let self = this;
+			console.log('leaveChannel');
+			clearInterval(self.intervalTime);
+			// 资源释放
+			if (self.platform == 'android') {
+				self.agoraRtm.leave();
+				self.agoraRtm.release({
+					channelId: self.liveChannelId
+				});
+			}
+			self.agoraView.leaveChannel(res => {
+				console.log('leaveChannel success');
+				self.agoraView.destroy();
+			});
+			let isCaster = self.isCaster ? '1' : '0';
+			let url = '/pagesLive/live/live-over?room_id=' + self.room_id + '&isCaster=' + isCaster;
+			console.log('url:' + url);
+			if (self.isCaster) {
+				uni.redirectTo({
+					url: url
+				});
+			} else {
+				if (type == 'auto') {
+					uni.navigateBack();
+				} else {
+					uni.redirectTo({
+						url: url
+					});
+				}
+			}
+		},
+		onLoginSuccess(e) {
+			this.joinChannel();
+		},
+		joinChannel() {
+			let self = this;
+			let agoraRtm = self.agoraRtm;
+			agoraRtm.createChannel(
+				{
+					channelId: self.liveChannelId
+				},
+				res => {
+					agoraRtm.join(res => {
+						self.onJoinSuccess();
+					});
+				}
+			);
+		},
+		onLoginFailure(e) {
+			console.log('onLoginFailure');
+			console.log(e);
+		},
+		onLogoutSuccess(e) {
+			console.log('onLogoutSuccess');
+			console.log(e);
+		},
+		onLogoutFailure(e) {
+			console.log('onLogoutFailure');
+			console.log(e);
+		},
+		onJoinSuccess(e) {
+			let self = this;
+			let msg = {
+				type: 'join',
+				msg: '',
+				registerLevel: self.registerLevel,
+				nickName: self.nickName
+			};
+			self.sendMsg(msg);
+			self.synRoomData();
+			// 10秒同步房间信息
+			self.intervalTime = setInterval(function() {
+				self.synRoomData();
+			}, 10000);
+		},
+		onJoinFailure(e) {
+			console.log('onJoinFailure');
+			console.log(e);
+		},
+		onChannelMessageReceived(e) {
+			console.log('onChannelMessageReceived');
+			this.showMsg(e.detail.messageData);
+		},
+		changeVirtualBackground(e) {
+			var self = this;
+			console.log('changeVirtualBackground e=' + e);
+			if (e == '') {
+				self.agoraView.enableVirtualBackground(
+					{
+						enabled: false
+					},
+					res => {
+						console.log('changeVirtualBackground cancel');
+						console.log(res);
+					}
+				);
+				return;
+			}
+			uni.downloadFile({
+				url: e,
+				success: res => {
+					if (res.statusCode === 200) {
+						console.log('下载成功');
+						self.agoraView.enableVirtualBackground(
+							{
+								enabled: true,
+								source: plus.io.convertLocalFileSystemURL(res.tempFilePath),
+								backgroundSourceType: 2,
+								color: 0xffffff,
+								blur_degree: 1
+							},
+							res => {
+								console.log('changeVirtualBackground success');
+								console.log(res);
+							}
+						);
+					}
+				}
+			});
+		},
+		synRoomData() {
+			// console.log('---------------------synRoomData-------------');
+			let self = this;
+			let agoraRtm = self.agoraRtm;
+			// 获取频道在线人数
+			agoraRtm.getChannelMemberCount(
+				{
+					channelIds: self.liveChannelId
+				},
+				res => {
+					self.online_count = self.platform == 'ios' ? res[0]['memberCount'] : res.memberCount[0].memberCount;
+				}
+			);
+			return;
+			// 获取频道在线用户
+			agoraRtm.getMembers(res => {
+				let ids = [];
+				self.user_ids = [];
+				let members = [];
+				if (self.platform === 'android') {
+					res.members.forEach((item, index) => {
+						if (index <= 2) {
+							ids.push(item.user_id);
+						}
+						self.user_ids.push(item.user_id);
+					});
+				} else if (self.platform === 'ios') {
+					res.forEach((item, index) => {
+						if (index <= 2) {
+							ids.push(item);
+						}
+						self.user_ids.push(item);
+					});
+				}
+
+				// getApp()._get(
+				// 	'user.user/getUserInfo',
+				// 	{
+				// 		user_id: ids.join(',')
+				// 	},
+				// 	res => {
+				// 		self.topUser = res.data.list;
+				// 	}
+				// );
+				// android {"message":"getMembers成功","members":[{"channelId":"channel_8","user_id":"8"}],"code":0}
+				// ios ---BEGIN:JSON---["8"]---END:JSON---
+			});
+			// 如果是主播，同步录制信息
+		}
+	}
+};
+</script>
+<style scoped>
+.iconfont {
+	font-family: iconfont;
+}
+
+image {
+	border: 0;
+	display: inline-block;
+	vertical-align: top;
+	max-width: 100%;
+	position: relative;
+}
+
+.avator-scrollbox .avator-scroll .mr_20 {
+	margin-right: -20rpx;
+}
+
+.nlv__container {
+	flex: 1;
+	height: 100%;
+	background-color: #fff;
+}
+
+.nlv_topbar {
+	flex: 1;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 1001;
+}
+
+.topbar-info {
+	flex-direction: row;
+	padding-left: 20rpx;
+	flex-flow: column;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 10rpx;
+}
+
+.avator-box {
+	background-color: rgba(0, 0, 0, 0.4);
+	padding: 6rpx;
+	border-radius: 50rpx;
+	flex-direction: row;
+	align-items: center;
+	padding-right: 6rpx;
+	margin-bottom: 20rpx;
+}
+
+.ta-avator {
+	border-radius: 50%;
+	margin-right: 10upx;
+	height: 68rpx;
+	width: 68rpx;
+}
+
+.tabox {
+	text-overflow: ellipsis;
+	width: 150rpx;
+	line-height: 27rpx;
+}
+
+.ta-name {
+	color: #fff;
+	font-size: 24rpx;
+}
+
+.ta-num {
+	color: #fff;
+	font-size: 24rpx;
+}
+
+.ta-gz {
+	background-image: linear-gradient(to right, #ff540a, #ff0f33);
+	border-radius: 40rpx;
+	color: #fff;
+	font-size: 24rpx;
+	text-align: center;
+	padding: 8rpx 0;
+	width: 90rpx;
+}
+
+.ta-gz-on {
+	background-color: rgba(255, 255, 255, 0.2);
+	background-image: none;
+}
+
+.avator-scroll {
+	padding-left: 20rpx;
+	/* #ifndef APP-PLUS-NVUE */
+	white-space: nowrap;
+	/* #endif */
+	flex-direction: row;
+	padding: 0 10rpx;
+	height: 60rpx;
+	width: 230rpx;
+}
+
+.member-num {
+	background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 40rpx;
+	color: #fff;
+	font-size: 24rpx;
+	text-align: center;
+	padding: 10rpx 14rpx;
+}
+
+.topbar-right {
+	flex-direction: row;
+	margin-top: -10rpx;
+	margin-right: 40rpx;
+}
+
+.topbar_ico {
+	color: #fff;
+	font-size: 40rpx;
+	padding: 15rpx;
+	position: relative;
+	z-index: 1001;
+}
+
+.nlv-rankbox {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 1001;
+	direction: ltr;
+	flex-direction: row;
+}
+
+.nlv-rkls {
+	flex-direction: row;
+	align-items: center;
+}
+
+.rkitem {
+	background-image: linear-gradient(to right, rgba(255, 56, 166, 0.5), rgba(57, 159, 255, 0.5));
+	border-radius: 40rpx;
+	color: #fff;
+	font-size: 24rpx;
+	margin-left: 20rpx;
+	padding: 4rpx 10rpx;
+}
+
+.nlv-uid {
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 28rpx;
+	position: absolute;
+	right: 20rpx;
+	top: 0;
+}
+
+.nlv_main {
+	position: fixed;
+	width: 750rpx;
+	flex: 1;
+	height: 100%;
+	z-index: 99;
+}
+
+.nlv-swiper {
+	flex: 1;
+}
+
+.nlv-playerbox {
+	flex: 1;
+}
+
+.player-video {
+	height: 100%;
+	width: 100%;
+}
+
+.nlv-footToolbar {
+	/* position: absolute; */
+	/* left: 0; */
+	/* right: 0; */
+	/* bottom: 0; */
+}
+
+.nlv-giftTipPanel {
+	flex-direction: column;
+	margin-left: 20rpx;
+	margin-bottom: 180rpx;
+}
+
+.giftip-item {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 100rpx;
+	padding: 8rpx;
+	padding-right: 100rpx;
+	flex-direction: row;
+	align-items: center;
+	width: 410rpx;
+	margin-top: 10rpx;
+}
+
+.gt-avator {
+	border-radius: 50%;
+	height: 72rpx;
+	width: 72rpx;
+}
+
+.gt-info {
+	padding: 0 20rpx;
+	overflow: hidden;
+	width: 230rpx;
+}
+
+.gt-tit {
+	color: #fff;
+	font-size: 28rpx;
+	overflow: hidden;
+	height: 40rpx;
+	line-height: 40rpx;
+}
+
+.gt-subtit {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 24rpx;
+	letter-spacing: 4rpx;
+}
+
+.gt-gift {
+	height: 100rpx;
+	width: 100rpx;
+	position: absolute;
+	top: -6rpx;
+	right: 35rpx;
+}
+
+.nlv-msglist {
+	margin-top: 10rpx;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.msg_bg {
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 24rpx;
+	padding: 8rpx 14rpx;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.msg_name {
+	color: #72deed;
+	font-size: 24rpx;
+	font-weight: bold;
+	line-height: 42rpx;
+}
+
+.msg_text {
+	color: rgba(255, 255, 255, 1);
+	font-size: 28rpx;
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	flex-wrap: wrap;
+	overflow: hidden;
+	width: 450rpx;
+	direction: ltr;
+	flex-direction: row;
+	/* width: 476rpx; */
+}
+
+.msg_txtxt {
+	color: rgba(255, 255, 255, 1);
+	font-size: 28rpx;
+	height: 28rpx;
+}
+
+.nlv-infobox {
+	position: fixed;
+	width: 750rpx;
+	padding: 25rpx;
+	bottom: 0;
+	left: 0;
+	flex: 1;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.nlv_reply {
+	flex-direction: row;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-radius: 50rpx;
+	padding: 0 20rpx;
+	height: 72rpx;
+	width: 420rpx;
+}
+
+.nlv_reply_text {
+	color: #fff;
+	font-size: 22rpx;
+}
+
+.nlv_btntool {
+	flex-direction: row;
+	justify-content: space-between;
+	margin-left: 20rpx;
+	flex: 1;
+}
+
+.btn-toolitem {
+	border: 0;
+	outline: none;
+	/*清除默认背景 */
+	background-color: transparent;
+	display: flex;
+	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
+	margin-left: 10rpx;
+	height: 72rpx;
+	width: 72rpx;
+	border-width: 0;
+}
+
+.btn-toolitem-cart {
+	background-image: linear-gradient(to right, #ff955d, #f93b37);
+}
+.btn-icon-img {
+	width: 72rpx;
+	height: 72rpx;
+	border-radius: 50%;
+}
+
+.i-btntool {
+	font-size: 40rpx;
+	color: #ffffff;
+}
+
+.nlv-rollMsgPanel {
+	margin-bottom: 80rpx;
+	max-height: 400rpx;
+	width: 480rpx;
+	/* flex-direction: column-reverse; */
+}
+.avator-scrollbox {
+	flex-direction: initial;
+	margin-left: -75rpx;
+}
+
+.nlv-msglist {
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-end;
+}
+
+.msg_bg {
+	margin-top: 13rpx;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 35rpx;
+	padding: 6rpx 16rpx;
+	line-height: 42rpx;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.msg_name {
+	color: #72deed;
+	font-size: 24rpx;
+	font-weight: bold;
+	line-height: 42rpx;
+}
+
+.msg-text-name {
+	color: #72deed;
+	font-size: 24rpx;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 2;
+	font-weight: bold;
+	flex-direction: row;
+}
+
+.level-text {
+	background-color: #72deed;
+	font-size: 20rpx;
+	color: #ffffff;
+	border-radius: 12rpx;
+	padding: 0 6rpx;
+	margin-right: 12rpx;
+}
+
+.msg_level-text {
+	background-color: #72deed;
+	font-size: 24rpx;
+	color: #ffffff;
+	border-radius: 12rpx;
+	font-weight: bold;
+}
+
+.msg_text {
+	font-weight: bold;
+	color: rgba(255, 255, 255, 1);
+	font-size: 24rpx;
+	line-height: 42rpx;
+	display: flex;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+	overflow: hidden;
+	width: 450rpx;
+	direction: ltr;
+	flex-direction: row;
+	position: relative;
+	/* width: 476rpx; */
+}
+
+.msg_level {
+	padding: 0 13rpx;
+	padding-left: 46rpx;
+	height: 32rpx;
+	border-radius: 16rpx;
+	background: linear-gradient(-65deg, rgba(114, 222, 237, 0.85), rgba(177, 232, 174, 0.85), rgba(177, 232, 174, 0.85));
+	margin-right: 6rpx;
+	position: relative;
+}
+
+.msg_level image {
+	position: absolute;
+	width: 24rpx;
+	height: 17rpx;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	left: 13rpx;
+}
+
+.msg_txt {
+	color: rgba(255, 255, 255, 1);
+	font-size: 24rpx;
+	font-weight: bold;
+	width: 450rpx;
+	line-height: 42rpx;
+}
+
+.product {
+	position: fixed;
+	bottom: 140rpx;
+	right: 20rpx;
+	background-color: #fff;
+	padding: 10rpx;
+	z-index: 99;
+	border-radius: 15rpx;
+}
+
+.product-pic {
+	width: 200rpx;
+	height: 200rpx;
+}
+
+.product-img {
+	width: 100%;
+	height: 100%;
+}
+
+.product-price {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 10rpx;
+}
+
+.diggnum {
+	width: 74rpx;
+	height: 22rpx;
+	font-size: 20rpx;
+	background-color: #f93b37;
+	color: #ffffff;
+	text-align: center;
+	line-height: 22rpx;
+	border-radius: 11rpx;
+	position: absolute;
+	top: -28rpx;
+	left: 0;
+}
+
+.notice_back_image {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 750rpx;
+}
+
+.notice_content {
+	text-align: center;
+	padding-top: 340rpx;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.notice_content_img {
+	width: 200rpx;
+	height: 200rpx;
+	margin: 0 auto;
+	margin-bottom: 44rxp;
+}
+
+.notice_content_imgbox {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.notice_btn {
+	width: 250rpx;
+	height: 80rpx;
+	border-style: solid;
+	border-width: 1rpx;
+	border-color: #fb4b70;
+	line-height: 80rpx;
+	text-align: center;
+	border-radius: 40rpx;
+	background: none;
+}
+
+.notice_btn_txt {
+	color: #fb4d70;
+}
+
+.notice_btns {
+	flex-direction: row;
+}
+
+.notice_title_t {
+	text-align: center;
+	color: #ffffff;
+	font-size: 34rpx;
+	height: 120rpx;
+	line-height: 120rpx;
+}
+
+.notice_title_c {
+	text-align: center;
+	color: #ffffff;
+	font-size: 22rpx;
+	height: 38rpx;
+	line-height: 38rpx;
+}
+
+.notice_title_b {
+	text-align: center;
+	color: #ffffff;
+	font-size: 26rpx;
+	height: 120rpx;
+	line-height: 120rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.notice_share {
+	position: absolute;
+	top: 0;
+}
+
+.notice_jiantou {
+	transform: rotate(180deg);
+	color: #ffffff;
+}
+
+.notice_back {
+	width: 750rpx;
+	color: #ffffff;
+	display: flex;
+	flex-direction: initial;
+	position: absolute;
+	top: 32px;
+	z-index: 0;
+	font-size: 30rpx;
+	align-items: center;
+	justify-content: center;
+}
+
+.notice_back_back {
+	text-align: left;
+	position: absolute;
+	top: 70rpx;
+	left: 45rpx;
+	z-index: 1;
+}
+
+.icon-guanbi {
+	color: #ffffff;
+}
+
+.icon-jiantou {
+	color: #ffffff;
+}
+
+.red {
+	color: #e22319;
+}
+.close-btn {
+	width: 48rpx;
+	height: 48rpx;
+}
+</style>

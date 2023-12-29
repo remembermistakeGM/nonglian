@@ -1,0 +1,550 @@
+<template>
+	<view>
+		<block v-if="is_replay">
+			<view class="video-detail">
+				<video id="myVideo" :src="replay_url" :autoplay="true" :loop="true" :controls="false" :show-fullscreen-btn="false"
+				 :show-play-btn="false" :show-center-play-btn="false" object-fit="cover" :style="{height: winHeight, width: winWidth}"
+				 @error="videoErrorCallback"></video>
+			</view>
+		</block>
+		<!-- #ifdef APP-PLUS -->
+		<block v-if="role == 'audience' && player_url != ''">
+			 <video
+				id="myVideo"
+				:src="player_url"
+				:autoplay="true"
+				:loop="true"
+				:controls="false"
+				:show-fullscreen-btn="false"
+				:show-play-btn="false"
+				:show-center-play-btn="false"
+				:auto-pause-if-navigate="false"
+				:auto-pause-if-open-native="false"	
+				object-fit="cover"
+				:style="{height: winHeight, width: winWidth}"
+			></video>
+		</block>
+		<!-- #endif -->
+		<!-- #ifndef APP-PLUS -->
+		<block v-if="role == 'audience' && player_url != ''">
+			<live-player id="livePlayer" :picture-in-picture-mode="picture_mode" :src="player_url" autoplay="true" mode="RTC" object-fit="fillCrop" :style="{height: winHeight, width: winWidth}"
+			 ></live-player>
+		</block>
+		<!-- #endif -->
+		<block v-if="role == 'broadcaster'">
+			<live-pusher id="livePusher1" ref="livePusher1" class="livePusher" :url="mainPusherInfo_url" mode="RTC"
+			 enable-camera="true" enable-mic="true" auto-focus="true" aspect="9:16" objectFit="fill" 
+			 max-bitrate="500" min-bitrate="200" waiting-image="../../../static/temporarily.jpg" :beauty="beauty" :whiteness="whiteness"
+			 :style="{height: winHeight, width: winWidth}" @statechange="recorderStateChange" @netstatus="recorderNetChange"></live-pusher>
+		</block>
+	</view>
+</template>
+
+<script>
+	const AgoraMiniappSDK = require("../../lib/mini-app-sdk-production.js");
+	const RTMClient = require('../../lib/agora-rtm.js');
+	export default {
+		data() {
+			return {
+				RTMClient: null,
+				/*加载中*/
+				loading_login: false,
+				/*推流对象*/
+				pusherContext: null,
+				/*拉流对象*/
+				playerContext: null,
+				player_url: '',
+				mainPusherInfo_url: '',
+				room_id: '',
+				/*发送消息*/
+				TextMsg: '',
+				/*是否打开礼物*/
+				open_gift: false,
+				/*评论*/
+				commentsList: [],
+				/*礼物*/
+				giftList: [],
+				/*是否打开商品列表*/
+				open_products: false,
+				/*当前讲解商品ID*/
+				explain_product_id: '',
+				/*当前讲解商品*/
+				explain_product: null,
+				/*是否显示更多功能*/
+				open_more: false,
+				/*是否美颜*/
+				beauty: 5,
+				/*美白*/
+				whiteness: 5,
+				/*前置后置*/
+				device_position: 'front',
+				/*打开分享*/
+				open_share: false,
+				/*分享参数*/
+				param_share: {},
+				/*分享图片*/
+				qrcode: null,
+				/*获取观看人数*/
+				showNumTimer: null,
+				/*是否点赞*/
+				is_click_digg: false,
+				// 房间详情
+				roomDetail: {},
+				// 用户信息
+				userInfo: {},
+				// RTC房间频道
+				channel: '',
+				// 应用appid
+				appId: '',
+				// rtm客户端
+				rtm_client: null,
+				reconnectTimer: null,
+				// 0 - loading, 1 - ok, 2 - error
+				push_status: 'loading',
+				picture_mode: ["push", "pop"],
+				isCaster: false
+			};
+		},
+		props: ['winHeight', 'winWidth', 'role', 'is_replay', 'replay_url'],
+		methods: {
+			show(){
+				if(this.playerContext!=null){
+					this.playerContext.play();
+				}
+				if(this.pusherContext){
+					this.reconnect();
+				}
+			},
+			/*请求对象*/
+			getRequest(){
+				let self = this;
+				// #ifdef APP-PLUS
+				return getApp().globalData.vueObj;
+				// #endif
+				// #ifndef APP-PLUS
+				return self;
+				// #endif
+			},
+			start(roomDetail, userInfo) {
+				let self = this;
+				self.roomDetail = roomDetail;
+				self.userInfo = userInfo;
+				self.channel = 'channel_' + roomDetail.shop_supplier_id;
+				self.isCaster = self.role == 'broadcaster';
+				if (self.isCaster) {
+					let whiteness = uni.getStorageSync('whiteness');
+					if (whiteness) {
+						self.whiteness = whiteness;
+					}
+					let beauty = uni.getStorageSync('beauty');
+					if (beauty) {
+						self.beauty = beauty;
+					}
+				} else {
+					//观众
+					console.log('观众进入');
+				}
+				self.loginRoom();
+			},
+			/*直播间登录*/
+			loginRoom() {
+				let self = this;
+				uni.showLoading({
+					title: '正在进入'
+				});
+				self.getRequest()._get('plus.live.agora.api/login', {
+					room_id: self.roomDetail.room_id,
+					channel: self.channel,
+					isCaster: self.isCaster
+				}, function(res) {
+					self.appId = res.data.appId;
+					self.initAgoraChannel(res.data.userSign).then(url => {
+						console.log(`pushing ${url}`);
+						let ts = new Date().getTime();
+						self.mainPusherInfo_url = url;
+						if (self.isCaster) {
+							self.pusherContext = uni.createLivePusherContext('livePusher1', self);
+							setTimeout(function() {
+								console.log('创建 pusherContext app：', self.pusherContext);
+								self.pusherContext.start();
+								self.loginIM();
+							}, 500);
+							// 同步数据
+							self.showNumTimer = setInterval(() => {
+								self.synRoomInfo();
+							}, 15000)
+						}
+					}).catch(e => {
+						console.log(`init agora client failed: ${e}`);
+						console.log(JSON.stringify(e));
+						uni.showToast({
+							title: `客户端初始化失败`,
+							icon: 'none',
+							duration: 5000
+						});
+					});
+				});
+			},
+			/**
+			 * 初始化sdk推流
+			 */
+			initAgoraChannel: function(token) {
+				let self = this;
+				return new Promise((resolve, reject) => {
+					let client = new AgoraMiniappSDK.Client();
+					//subscribe stream events
+					self.subscribeEvents(client);
+					AgoraMiniappSDK.LOG.onLog = (text) => {
+						// callback to expose sdk logs
+						console.log(text);
+					};
+					// info:1 WARNING:2 ERROR:3 DEBUG:0
+					AgoraMiniappSDK.LOG.setLogLevel(1);
+					self.client = client;
+					client.setRole(self.role);
+					client.init(self.appId, () => {
+						console.log(`client init success`);
+						// pass key instead of undefined if certificate is enabled
+						client.join(token, self.channel, self.getRequest().getUserId(), () => {
+							console.log(`client join channel success`);
+							//and get my stream publish url
+							if (self.isCaster) {
+								client.publish(url => {
+									console.log(`client publish success`);
+									console.log('url=' + url);
+									resolve(url);
+								}, e => {
+									console.log(`client publish failed: ${e.code} ${e.reason}`);
+									reject(e)
+								});
+							} else {
+								resolve();
+							}
+						}, e => {
+							console.log(`: ${e.code} ${e.reason}`);
+							reject(e)
+						})
+					}, e => {
+						console.log(`client init failed: ${e} ${e.code} ${e.reason}`);
+						reject(e);
+					});
+				});
+			},
+			loginIM() {
+				let self = this;
+				self.getRequest()._get('plus.live.agora.api/rtmToken', {
+					channel: self.channel
+				}, function(res) {
+					self.rtm_client = new RTMClient(self.appId);
+					self.onChannelEvent();
+					// sdk连接状态
+					self.rtm_client.on('ConnectionStateChanged', (newState, reason) => {
+						console.log('The connection status', newState)
+						console.log('The reason for the state change', reason)
+					});
+					// 登录 RTM 系统
+					self.rtm_client.login(res.data.userSign, '' + self.getRequest().getUserId()).then(() => {
+						console.log('AgoraRTM client login success');
+						self.rtm_client.joinChannel(self.channel).then(() => {
+							console.log('join channel success');
+							// 发送通知
+							let msg = {
+								type: 'enter',
+								nickName: self.userInfo.nickName
+							};
+							self.sendMsg(JSON.stringify(msg));
+							if(self.isCaster){
+								// 直播开始
+								self.getRequest()._post(
+									'plus.live.room/set_status', {
+										room_id: self.roomDetail.room_id,
+										status: 101
+									},
+									function(res) {
+										// 开始录制
+										self.startRecord();
+									}
+								);
+							}
+						}).catch((err) => {
+							console.log('join channel failed', err)
+						});
+					}).catch(err => {
+						console.log('AgoraRTM client login failure', err);
+					});
+				});
+			},
+			/*获取直播间信息*/
+			synRoomInfo(e){
+				let self = this;
+				self.getRequest()._post(
+					'plus.live.room/syn_room',
+					{
+						room_id: self.roomDetail.room_id,
+					},
+					function(res) {
+						// 发送通知
+						let msg = {
+							type: 'views',
+							views: res.data.model.views,
+							digg_num: res.data.model.digg_num,
+						};
+						self.sendMsg(JSON.stringify(msg));
+					}
+				);
+			},
+			/**
+			 * 注册stream事件
+			 */
+			subscribeEvents: function(client) {
+				let self = this;
+				/**
+				 * sometimes the video could be rotated
+				 * this event will be fired with ratotion
+				 * angle so that we can rotate the video
+				 * NOTE video only supportes vertical or horizontal
+				 * in case of 270 degrees, the video could be
+				 * up side down
+				 */
+				client.on("video-rotation", (e) => {
+					console.log(`video rotated: ${e.rotation} ${e.uid}`);
+				});
+				/**
+				 * fired when new stream join the channel
+				 */
+				client.on("stream-added", e => {
+					let uid = e.uid;
+					console.log(`stream ${uid} added`);
+					/**
+					 * subscribe to get corresponding url
+					 */
+					client.subscribe(uid, (url, rotation) => {
+						console.log(`stream ${uid} subscribed successful`);
+						console.log(url);
+						self.player_url = url;
+						self.loginIM();
+					}, e => {
+						console.log(`stream subscribed failed ${e} ${e.code} ${e.reason}`);
+					});
+				});
+
+				/**
+				 * remove stream when it leaves the channel
+				 */
+				client.on("stream-removed", e => {
+					let uid = e.uid;
+					console.log(`stream ${uid} removed`);
+				});
+
+				/**
+				 * when bad thing happens - we recommend you to do a 
+				 * full reconnect when meeting such error
+				 * it's also recommended to wait for few seconds before
+				 * reconnect attempt
+				 */
+				client.on("error", err => {
+					let errObj = err || {};
+					let code = errObj.code || 0;
+					let reason = errObj.reason || "";
+					console.log(`error: ${code}, reason: ${reason}`);
+					if (code === 501 || code === 904) {
+						self.reconnect();
+					}
+				});
+
+				/**
+				 * there are cases when server require you to update
+				 * player url, when receiving such event, update url into
+				 * corresponding live-player, REMEMBER to update key property
+				 * so that live-player is properly refreshed
+				 * NOTE you can ignore such event if it's for pusher or happens before
+				 * stream-added
+				 */
+				client.on('update-url', e => {
+					console.log(`update-url: ${JSON.stringify(e)}`);
+				});
+			},
+			onChannelEvent: function() {
+				let self = this;
+				// 频道消息
+				self.rtm_client.on('ChannelMessage', (message, memberId) => {
+					let object = {
+						uid: memberId,
+						message: message.text
+					}
+					console.log('message -----');
+					console.log(message);
+					if (memberId != self.getRequest().getUserId()) {
+						self.$emit('showMsg', message.text);
+					}
+				})
+				//频道成员进出通知
+				self.rtm_client.on('MemberJoined', (memberId) => {
+					console.log('memberId: ', memberId);
+				})
+				self.rtm_client.on('MemberLeft', (memberId) => {
+					console.log('memberId: ', memberId);
+				})
+			},
+			/** type消息类型 文本：text,礼物：gift,进入房间：enter 观看人数：views 点赞: digg 
+				结束：over 讲解: explain
+			*/
+			sendMsg(msg) {
+				let self = this;
+				self.rtm_client.sendChannel(msg).then(() => {
+					self.$emit('showMsg', msg);
+				}).catch(error => {
+					// 频道消息发送失败的处理逻辑
+					console.log('频道消息发送失败的处理逻辑');
+					console.log(error);
+				});
+			},
+			/*直播设置*/
+			liveSet(e) {
+				switch (e.type) {
+					case 'beauty':
+						this.beauty = e.value;
+						break;
+					case 'whiteness':
+						this.whiteness = e.value;
+						break;
+					case 'device_position':
+						this.device_position = e.value;
+						if (this.pusherContext != null) {
+							this.pusherContext.switchCamera({
+								type: e.value,
+								success: function(res) {
+									console.log('切换成功');
+								},
+								fail: function(err) {
+									console.log(err);
+								}
+							});
+						}
+						break;
+				}
+			},
+			/**
+			 * reconnect when bad things happens...
+			 */
+			reconnect: function() {
+				let self = this;
+				uni.showToast({
+					title: '尝试恢复链接...',
+					icon: 'none',
+					duration: 5000
+				});
+				// always destroy client first
+				// *important* miniapp supports 2 websockets maximum at same time
+				// do remember to destroy old client first before creating new ones
+				self.client && self.client.destroy();
+				self.reconnectTimer = setTimeout(() => {
+					self.loginRoom();
+				}, 1 * 1000);
+			},
+			/**
+			 * 推流状态更新回调
+			 */
+			recorderStateChange: function (e) {
+			  console.log('live-pusher code: ' , e)
+			  if (e.detail.code === -1307) {
+				//re-push
+				console.log('live-pusher stopped ---- error');
+				this.push_status = 'error';
+			  }
+			  if (e.detail.code === 1008) {
+				//started
+				console.log('live-pusher started');
+				if(this.push_status === "loading") {
+					this.push_status = 'ok';
+				}
+			  }
+			},
+			recorderNetChange: function(e) {
+			  //console.log('netstatus:' + JSON.stringify(e));
+			},
+			onMainError: function(e) {
+				var self = this;
+				console.log('onMainError called: ', e);
+			},
+			/*退出 type:  auto:主动  over：结束*/
+			exit: function(type) {
+				let self = this;
+				let url = '/pagesLive/live/index';
+				if (self.role == 'broadcaster') {
+					type = 'over';
+					// 通知其他人
+					let msg = {
+						type: 'over'
+					};
+					self.sendMsg(JSON.stringify(msg));
+				}
+				if(type == 'over'){
+					//直播结束页
+					url = '/pagesLive/live/live-over?room_id=' + self.roomDetail.room_id;
+				}
+				self.clear();
+				uni.redirectTo({
+					url: url
+				});
+			},
+			startRecord:function(){
+				let self = this;
+				// 请求开始录制
+				if(self.isCaster){
+					self.getRequest()._post('plus.live.agora.api/record_acquire', {
+						room_id: self.roomDetail.room_id
+					}, function(res) {
+						self.getRequest()._post('plus.live.agora.api/record_start', {
+							room_id: self.roomDetail.room_id
+						}, function(res) {
+							self.getRequest()._post('plus.live.agora.api/record_query', {
+								room_id: self.roomDetail.room_id
+							}, function(res) {
+								
+							});
+						});
+					});
+				}
+			},
+			/*销毁*/
+			clear: function() {
+				let self = this;
+				try {
+					if (self.showNumTimer) {
+						clearInterval(self.showNumTimer);
+						self.showNumTimer = null;
+					}
+					if (self.playerContext) {
+						self.playerContext.stop();
+						self.playerContext = null;
+					}
+					if (self.pusherContext) {
+						self.pusherContext.stop();
+						self.pusherContext = null;
+					}
+					clearTimeout(this.reconnectTimer);
+					self.reconnectTimer = null;
+					if (self.isCaster) {
+						try {
+							self.client && self.client.unpublish();
+						} catch (e) {
+							console.log(`unpublish failed`);
+							console.log(e);
+						}
+					}
+					// rtm退出
+					self.client && self.client.leave();
+					// rtm退出
+					self.rtm_client && self.rtm_client.logout();
+				} catch (e) {
+					console.log(e);
+				}
+			}
+		}
+	}
+</script>
+
+<style scoped>
+
+</style>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "奖品兑换",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "myinfo": "../../pages/order/confirm-order/my-info"
+  }
+}

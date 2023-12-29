@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "直播商品",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "upload": "../../../../../components/upload/upload",
+    "products": "./dialog/Products"
+  }
+}

@@ -1,0 +1,19 @@
+
+.diy-store {
+}
+.diy-store .diy-head {
+	padding: 0 20rpx;
+	height: 100rpx;
+}
+.diy-store .diy-head .name {
+	font-size: 36rpx;
+	font-weight: bold;
+}
+.diy-store .store-item {
+	border-top: 1rpx solid #eeeeee;
+}
+.diy-store .store-item-logo,
+.diy-store .store-item-logo image {
+	width: 120rpx;
+	height: 120rpx;
+}

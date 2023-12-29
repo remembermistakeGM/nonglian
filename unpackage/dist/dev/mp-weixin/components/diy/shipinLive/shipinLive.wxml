@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="shipin-live drag optional drag__nomove data-v-f9776b12" style="{{'right:' + e + ';' + ('bottom:' + f) + ';' + ('opacity:' + g)}}"><view class="shipin-wrap data-v-f9776b12" bindtap="{{d}}"><image src="{{b}}" class="img data-v-f9776b12" mode="widthFix"></image><view class="txt data-v-f9776b12">{{c}}</view></view></view>

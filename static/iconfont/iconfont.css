@@ -1,0 +1,79 @@
+@font-face {
+  font-family: 'wiconfont';  /* Project id 4247934 */
+  src: url('//at.alicdn.com/t/c/font_4247934_batancasffd.woff2?t=1703557353933') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4247934_batancasffd.woff?t=1703557353933') format('woff'),
+       url('//at.alicdn.com/t/c/font_4247934_batancasffd.ttf?t=1703557353933') format('truetype');
+}
+
+.wiconfont {
+  font-family: "wiconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wicon-zhihuinongye:before {
+  content: "\e605";
+}
+
+.wicon-quyu1:before {
+  content: "\e848";
+}
+
+.wicon-shuye:before {
+  content: "\e606";
+}
+
+.wicon-stop:before {
+  content: "\e68e";
+}
+
+.wicon-quyu:before {
+  content: "\e933";
+}
+
+.wicon-feng:before {
+  content: "\e604";
+}
+
+.wicon-nongyun:before {
+  content: "\e600";
+}
+
+.wicon-lieri:before {
+  content: "\e601";
+}
+
+.wicon-yujiaxue:before {
+  content: "\e602";
+}
+
+.wicon-dayu:before {
+  content: "\e603";
+}
+
+.wicon-kongqiwendu:before {
+  content: "\eb3a";
+}
+
+.wicon-tianqi:before {
+  content: "\e87f";
+}
+
+.wicon-jizhan:before {
+  content: "\e69f";
+}
+
+.wicon-w_shidu:before {
+  content: "\e673";
+}
+
+.wicon-turangshuifen:before {
+  content: "\ea30";
+}
+
+.wicon-tianqi1:before {
+  content: "\e6a7";
+}
+

@@ -1,0 +1,1 @@
+<view class="{{['bottom-panel', a]}}" bindtap="{{b}}"><view class="popup-bg"><view class="wechat-box"><image src="/static/share.png" mode="widthFix"></image></view></view></view>

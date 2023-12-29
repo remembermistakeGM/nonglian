@@ -1,0 +1,52 @@
+
+.usable-distr .popup-bg {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.6);
+		z-index: 99;
+}
+.usable-distr .main {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		min-height: 400rpx;
+		max-height: 1400rpx;
+		background-color: #fff;
+		transform: translate3d(0, 980rpx, 0);
+		transition: transform 0.2s cubic-bezier(0, 0, 0.25, 1);
+		padding-bottom: env(safe-area-inset-bottom);
+		z-index: 99;
+}
+.usable-distr.open .main {
+		transform: translate3d(0, 0, 0);
+}
+.usable-distr.close .popup-bg {
+		display: none;
+}
+.distr-tit {
+		text-align: center;
+		font-size: 39rpx;
+		margin-top: 23rpx;
+		margin-bottom: 70rpx;
+}
+.distr-list {
+		padding: 25rpx;
+		margin-bottom: 25rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+}
+.bor_botm {
+		border-bottom: 1rpx solid #cacaca;
+}
+.distr_btn button {
+		width: 90%;
+		margin: 0 auto;
+		margin-bottom: 30rpx;
+		height: 60rpx;
+		line-height: 60rpx;
+		border-radius: 30rpx;
+}

@@ -1,0 +1,68 @@
+
+.evaluate {
+	/* background: #eeeeee; */
+}
+.evaluate-item {
+	margin-bottom: 20rpx;
+	background: #ffffff;
+	border-bottom: 1px solid #dddddd;
+}
+.product .cover,
+.product .cover image {
+	width: 160rpx;
+	height: 160rpx;
+}
+.evaluate .grade .item .iconfont {
+	width: 60rpx;
+	height: 60rpx;
+	line-height: 60rpx;
+	border-radius: 50%;
+	font-size: 40rpx;
+	color: #ffffff;
+	text-align: center;
+}
+.evaluate .grade .item {
+	height: 60rpx;
+	padding-right: 20rpx;
+	line-height: 60rpx;
+	border-radius: 30rpx;
+	transition: background-color 0.4s;
+}
+.grade .flex-1:nth-child(1) .iconfont {
+	background: #f42222;
+}
+.grade .flex-1:nth-child(2) .iconfont {
+	background: #f2b509;
+}
+.grade .flex-1:nth-child(3) .iconfont {
+	background: #999999;
+}
+.grade .flex-1.active:nth-child(1) .item {
+	background: #f42222;
+	color: #ffffff;
+}
+.grade .flex-1.active:nth-child(2) .item {
+	background: #f2b509;
+	color: #ffffff;
+}
+.grade .flex-1.active:nth-child(3) .item {
+	background: #999999;
+	color: #ffffff;
+}
+.icon-start {
+	color: #f5a623;
+}
+.evalu-value {
+	display: flex;
+	margin-bottom: 30rpx;
+}
+.eval {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.evalu {
+	display: flex;
+	align-items: baseline;
+	flex-direction: column;
+}

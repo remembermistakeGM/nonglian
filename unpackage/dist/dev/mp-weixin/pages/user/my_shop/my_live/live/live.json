@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发起直播",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "upload": "../../../../../components/upload/upload"
+  }
+}

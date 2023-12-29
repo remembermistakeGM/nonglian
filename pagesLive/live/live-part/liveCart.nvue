@@ -1,0 +1,479 @@
+<template>
+	<view v-if="popupVisible" class="popup-footer">
+		<view class="pop__ui_panel">
+			<view class="pop__ui_mask" @tap="close"></view>
+			<view class="pop__ui_child anim-footer" @tap.stop="">
+				<div v-if="!open_addproduct">
+					<div class="product-head d-b-c p20 f30">
+						<div class="d-s-c">
+							<button v-if="isCaster" class="product-head-btn" @tap="addProductFunc"><text class="rose f30">添加商品</text></button>
+						</div>
+						<text class="ml10">共{{ total }}件商品</text>
+						<div class="d-s-c">
+							<button class="product-head-btn" @tap="openOrder"><text class="rose f30">订单</text></button>
+						</div>
+					</div>
+					<list class="add-product-list">
+						<cell class="add-product-item d-s-s" v-for="(item, index) in productList" :key="index">
+							<div class="add-product-picture">
+								<view><image class="add-product-picture-image" :src="item.image[0].file_path" mode="aspectFill"></image></view>
+								<text class="rose f28"></text>
+							</div>
+							<div class="flex-1 ml20">
+								<div class="text-ellipsis-2">
+									<text class="f28">{{ item.product_name }}</text>
+								</div>
+								<div class="d-s-s d-r p-20-0">
+									<div class="d-s-s price d-r flex-1 f24">
+										<!--<text class="f24 rose">￥</text>-->
+										<text class="f34 fb rose">{{ item.product_price }}</text>
+									</div>
+									<div v-if="isCaster && product_active != item.product_id" class="add-product-relation" @tap="setProduct(item)">
+										<text class="white f28">设为讲解</text>
+									</div>
+									<div v-if="product_active == item.product_id" class="add-product-relation"><text class="white f28">讲解中</text></div>
+									<div v-if="!isCaster" class="add-product-relation" @tap="gotoProduct(item)"><text class="white f28 m-auto">去购买</text></div>
+								</div>
+							</div>
+						</cell>
+					</list>
+				</div>
+
+				<!--添加商品-->
+				<div v-if="open_addproduct">
+					<div class="add-product-head d-b-c p20 f30">
+						<text class="f30">关联商品</text>
+						<button type="default" class="add-product-head-btn" @tap="confirmFunc(true)"><text class="rose f28">确认</text></button>
+					</div>
+					<scroll-view class="add-product-list" scroll-y="true" @scrolltolower="loadmoreFunc">
+						<view class="add-product-item d-b-c" v-for="(item, index) in listData" :key="index">
+							<div class="add-product-picture"><image class="add-product-picture-image" :src="item.product_image" mode="aspectFill"></image></div>
+							<div class="ml20 flex-1">
+								<div class="text-ellipsis-2">
+									<text class="f30">{{ item.product_name }}</text>
+								</div>
+								<div class="d-s-s d-r p-20-0">
+									<div class="d-s-s price d-r flex-1 f24">
+										<text class="ml20 gray9 f28">售价：{{ item.product_price }}</text>
+									</div>
+									<div v-if="!isrelation(item)" class="add-product-relation" @tap="relationProduct(item)"><text class="white f28">添加</text></div>
+									<div v-if="isrelation(item)" class="add-product-relation add-product-relation-hover"><text class="white f28">已添加</text></div>
+								</div>
+							</div>
+						</view>
+						<!-- 没有记录 -->
+						<view class="d-c-c p30" v-if="listData.length == 0 && !loading"><text class="cont">亲，暂无相关记录哦</text></view>
+						<uni-load-more v-else :loadingType="loadingType"></uni-load-more>
+					</scroll-view>
+				</div>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+import uniLoadMore from '@/components/uni-load-more.vue';
+export default {
+	components: {
+		uniLoadMore
+	},
+	data() {
+		return {
+			popupVisible: false,
+			/*当前讲解商品*/
+			product_active: '',
+			/*总条数*/
+			total: 0,
+			/*是否展示商品*/
+			open_products: false,
+			/*已关联商品id*/
+			relationIds: [],
+			/*商品列表*/
+			productList: [],
+			/*是否展开订单*/
+			open_order: false,
+			/*是否展开添加产品*/
+			open_addproduct: false,
+			/*没有更多*/
+			no_more: false,
+			/*商品列表*/
+			listData: [],
+			/*当前页面*/
+			page: 1,
+			/*一页多少条*/
+			list_rows: 10,
+			/*已选商品*/
+			productIds: [],
+			// 是否打开订单
+			open_Order: false,
+			loading: false
+		};
+	},
+	props: ['isCaster', 'room_id', 'shop_supplier_id'],
+	computed: {
+		/*加载中状态*/
+		loadingType() {
+			if (this.loading) {
+				return 1;
+			} else {
+				if (this.listData.length != 0 && this.no_more) {
+					return 2;
+				} else {
+					return 0;
+				}
+			}
+		}
+	},
+	methods: {
+		show(index) {
+			this.popupVisible = true;
+			this.getProduct();
+		},
+		/*请求对象*/
+		getRequest() {
+			let self = this;
+			// #ifdef APP-PLUS
+			return getApp().globalData.vueObj;
+			// #endif
+			// #ifndef APP-PLUS
+			return self;
+			// #endif
+		},
+		/*获取商品*/
+		getProduct() {
+			let self = this;
+			self.open_addproduct = false;
+			self.relationIds = [];
+			uni.showLoading({
+				title: '正在加载',
+				mask: true
+			});
+			self.getRequest()._get(
+				'plus.live.RoomApply/liveproduct',
+				{
+					shop_supplier_id: self.shop_supplier_id
+				},
+				function(res) {
+					uni.hideLoading();
+					if (res.data.list != null) {
+						self.productList = res.data.list.data;
+						for (let i = 0; i < self.productList.length; i++) {
+							self.relationIds.push(self.productList[i].product_id);
+						}
+						self.total = res.data.list.total;
+					}
+				},
+				false,
+				function() {
+					uni.hideLoading();
+				}
+			);
+		},
+		/*添加商品*/
+		addProductFunc() {
+			this.open_addproduct = true;
+			this.productIds = [];
+			this.relationIds.forEach(item => {
+				this.productIds.push(item);
+			});
+			this.start();
+		},
+
+		/*开始*/
+		start() {
+			this.loading = true;
+			this.no_more = false;
+			this.listData = [];
+			this.page = 1;
+			this.list_rows = 10;
+			this.getData();
+		},
+
+		/*获取数据*/
+		getData() {
+			let self = this;
+			let page = self.page;
+			let list_rows = self.list_rows;
+			self.loading = true;
+			self.getRequest()._get(
+				'plus.live.RoomApply/product_list',
+				{
+					page: page || 1,
+					list_rows: list_rows
+				},
+				function(res) {
+					self.loading = false;
+					self.listData = self.listData.concat(res.data.list.data);
+					self.last_page = res.data.list.last_page;
+					if (res.data.list.last_page <= 1) {
+						self.no_more = true;
+					}
+				}
+			);
+		},
+
+		/*可滚动视图区域到底触发*/
+		loadmoreFunc() {
+			let self = this;
+			self.bottomRefresh = true;
+			self.page++;
+			self.loading = true;
+			if (self.page > self.last_page) {
+				self.loading = false;
+				self.no_more = true;
+				return;
+			}
+			self.getData();
+		},
+
+		/*判断是否关联*/
+		isrelation(e) {
+			if (this.productIds.indexOf(e.product_id) != -1) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+
+		/*设置商品*/
+		relationProduct(e) {
+			let self = this;
+			this.productIds.push(e.product_id);
+		},
+
+		/*确认商品*/
+		confirmFunc() {
+			let self = this;
+			let e = self.productIds;
+			if (e.length > 0) {
+				for (let i = 0; i < e.length; i++) {
+					if (self.relationIds.indexOf(e[i]) != -1) {
+						e.splice(i, 1);
+						i--;
+					}
+				}
+			} else {
+				self.getProduct();
+				return;
+			}
+			if (e.length == 0) {
+				self.getProduct();
+				return;
+			}
+			self.getRequest()._post(
+				'plus.live.RoomApply/addProduct',
+				{
+					productIds: e
+				},
+				function(res) {
+					self.getProduct();
+				}
+			);
+		},
+		/*设置商品*/
+		setProduct(item) {
+			let self = this;
+			uni.showLoading({
+				title: '设置中',
+				mask: true
+			});
+			self.getRequest()._post(
+				'plus.live.room/set_product',
+				{
+					room_id: self.room_id,
+					product_id: item.product_id
+				},
+				function(res) {
+					self.product_active = item.product_id;
+					self.$emit('setProduct', item.product_id);
+					self.close();
+				}
+			);
+		},
+		/*跳转商品详情*/
+		gotoProduct(e) {
+			let url = '/pages/product/detail/detail?product_id=' + e.product_id + '&room_id=' + this.room_id;
+			this.getRequest().gotoPage(url);
+		},
+		openOrder() {
+			this.popupVisible = false;
+			this.$emit('openOrder');
+		},
+		close() {
+			if (this.open_addproduct) {
+				this.open_addproduct = false;
+			} else {
+				this.popupVisible = false;
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+.m-auto {
+	margin: 0 auto;
+}
+.pop__ui_mask {
+	background-color: #000;
+	opacity: 0.1;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1000;
+}
+
+.pop__ui_child {
+	background-color: #fbfbfb;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+	font-size: 14px;
+	overflow: hidden;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1001;
+}
+
+.pop__ui_head {
+	border-style: solid;
+	border-color: #ebebeb;
+	border-bottom-width: 1upx;
+	font-size: 28upx;
+	font-weight: 700;
+	padding: 30upx;
+	text-align: left;
+}
+
+.wrap_carts {
+	height: 650upx;
+}
+
+.item {
+	flex-direction: row;
+	align-items: center;
+	padding: 30upx;
+	position: relative;
+}
+
+.gpic {
+	margin-right: 30upx;
+	height: 50px;
+	width: 50px;
+}
+
+.ginfo {
+	flex: 1;
+}
+
+.name {
+	font-size: 28upx;
+}
+
+.price {
+	color: #ff0f33;
+	font-size: 28upx;
+	margin-top: 15upx;
+}
+
+.gbtn {
+	background-image: linear-gradient(to right, #ff540a, #ff0f33);
+	border-radius: 5upx;
+	color: #fff;
+	font-size: 28upx;
+	padding: 12upx 25upx;
+}
+
+.product-head {
+	flex-direction: row;
+}
+.product-head-btn,
+.add-product-head-btn {
+	height: 60rpx;
+	line-height: 60rpx;
+	background-color: #fff;
+	border-color: #f72b6c;
+}
+.add-product-list {
+	width: 750rpx;
+	height: 700rpx;
+}
+
+.add-product-head {
+	flex-direction: row;
+}
+.add-product-item {
+	flex-direction: row;
+	padding: 20rpx;
+}
+.add-product-picture {
+	width: 160rpx;
+	height: 160rpx;
+}
+.add-product-picture-image {
+	width: 160rpx;
+	height: 160rpx;
+}
+.text-ellipsis-2 {
+	height: 70rpx;
+}
+.add-product-relation {
+	background-color: #51a938;
+	color: #fff;
+	border-color: #51a938;
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+	border-radius: 6rpx;
+	width: 120rpx;
+	padding: 10rpx 0;
+}
+.add-product-relation text {
+	/* display: flex;
+		height: 60rpx;
+		line-height: 60rpx; */
+}
+.add-product-relation-hover {
+	background-color: #abd7a2;
+	border-color: #abd7a2;
+}
+.add-product-order {
+	position: absolute;
+	width: 750rpx;
+	height: 900rpx;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	border-radius: 16rpx 16rpx 0 0;
+	background-color: #fff;
+	transition: transform 0.2s ease;
+	transform: translate(0, 0);
+}
+.add-product-order-close {
+	transition: transform 0s ease;
+	transform: translate(0, 100%);
+}
+.order-close {
+	width: 40rpx;
+	height: 40rpx;
+}
+.add-order-head {
+	background-color: #eeeeee;
+	flex-direction: row;
+}
+.order-num {
+	font-size: 28px;
+	color: #ababab;
+	margin-bottom: 10rpx;
+}
+.order-title {
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.order-money {
+	margin-top: 20rpx;
+}
+</style>

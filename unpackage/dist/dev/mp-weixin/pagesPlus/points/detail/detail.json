@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "积分商品详情",
+  "usingComponents": {
+    "spec": "./popup/Spec",
+    "mpservice": "../../../components/mpservice/Mpservice",
+    "guarantee": "../../../components/guarantee"
+  }
+}

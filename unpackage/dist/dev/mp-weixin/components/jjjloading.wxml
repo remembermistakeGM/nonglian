@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="request-loading-view data-v-f806401e"><view class="loading-view data-v-f806401e"><image class="loading-img data-v-f806401e" src="/static/loading.gif" mode=""></image></view></view>

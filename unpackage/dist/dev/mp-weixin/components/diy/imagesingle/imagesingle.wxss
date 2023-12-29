@@ -1,0 +1,4 @@
+
+.diy-imageSingle image {
+	width: 100%;
+}

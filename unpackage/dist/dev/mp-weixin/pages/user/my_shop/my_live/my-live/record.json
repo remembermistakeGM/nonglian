@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "直播记录",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../../../../components/uni-load-more"
+  }
+}

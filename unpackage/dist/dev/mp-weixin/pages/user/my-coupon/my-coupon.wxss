@@ -1,0 +1,45 @@
+
+.d-f {
+	display: flex;
+	align-items: center;
+	padding-left: 30rpx;
+	padding-top: 30rpx;
+}
+.con_tit {
+	font-weight: 800;
+	font-size: 31rpx;
+	margin-left: 15rpx;
+}
+/* 
+
+	.icon-dianpu1 {
+		margin-right: 15rpx;
+	}
+
+	.coupon_type {
+		padding: 10rpx 20rpx;
+		position: absolute;
+		z-index: 100;
+		color: #ffffff;
+		right: 0;
+		top: 0;
+		background: #cacaca80;
+		height: 36rpx;
+		border-bottom-left-radius: 18rpx;
+	}
+
+	
+
+	.coupon_item {
+		margin: 20rpx 0;
+	}
+
+	.range_item {
+		border: 1rpx solid #D9D9D9;
+		border-top: none;
+		padding: 8rpx;
+		border-bottom-left-radius: 10rpx;
+		border-bottom-right-radius: 10rpx;
+		color: #666666;
+		box-shadow: 0 0 8rpx rgba(0, 0, 0, 0.1);
+	} */

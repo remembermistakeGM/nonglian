@@ -1,0 +1,591 @@
+<template>
+	<view class="wrap__giftPanel product-popup" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap.stop="closePopup"></view>
+		<view class="pop__ui_child anim-footer">
+			<view class="main">
+				<view class=" d-r d-e-c p20" @click="closePopup">
+					<!-- #ifdef APP-PLUS -->
+					<text class="icon iconfont icon-guanbi">&#xe629;</text>
+					<!-- #endif -->
+				</view>
+				<view class="header">
+					<image :src="form.show_sku.sku_image" mode="aspectFit" class="avt"></image>
+					<view class="spec-top">
+						<text class="num">¥{{form.show_sku.product_price}}</text>
+						<text class="stock">库存:{{form.show_sku.stock_num}}</text>
+						<text class="select_spec">{{ selectSpec}}</text>
+					</view>
+				</view>
+
+				<view class="body">
+					<!--规格-->
+					<view>
+						<scroll-view scroll-y="true" class="specs mt20" style="max-height: 600rpx;"
+							v-if="form.specData !=null">
+							<view class="specs mt20" v-for="(item_attr,attr_index) in form.specData.spec_attr"
+								:key="attr_index">
+								<view class="specs-hd p-20-0">
+									<text class="f26 gray3">{{item_attr.group_name}}</text>
+									<!-- 							<text class="ml10 red" v-if="form.productSpecArr[attr_index]==null">
+									请选择{{item_attr.group_name}}
+								</text> -->
+								</view>
+								<view class="specs-list">
+									<button class="specs-list-button"
+										:class="item.checked ? 'btn-checked' : 'btn-checke'"
+										v-for="(item,item_index) in item_attr.spec_items" :key="item_index"
+										@click="selectAttr(attr_index, item_index)"><text
+											:class="item.checked ? 'btn-checked-text' : 'btn-checke-text'">{{item.spec_value}}</text>
+									</button>
+								</view>
+
+							</view>
+						</scroll-view>
+					</view>
+					<!--选择数量-->
+					<view class="level-box count_choose">
+						<text class="key mr20">数量</text>
+						<view class="d-s-c d-r">
+							<view class="icon-box minus d-c-c" @click="sub()" :class="{'num-wrap':!issub}">
+								<text class="icon iconfont icon-jian" style="font-size: 20rpx;color: #333333;">—</text>
+							</view>
+							<input class="text-wrap-input" type="number" v-model="form.show_sku.sum" />
+							<view class="icon-box plus d-c-c" :class="{'num-wrap':!isadd}" @click="add()">
+								<text class="icon iconfont icon-jia" style="font-size: 20rpx;color: #333333;">+</text>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="btns" style="width: 750rpx;padding:0;">
+					<button class="confirm-btn" @click="confirmFunc(form)"><text class="white f32">确认</text></button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				activeIndex: 0,
+				value: 1,
+				/*表单对象*/
+				form: {
+					detail: {
+
+					},
+					show_sku: {
+						sku_image: ''
+					},
+					specData: {}
+				},
+				/*当前商品总库存*/
+				stock: 0,
+				/*选择提示*/
+				selectSpec: '',
+				/*是否打开过多规格选择框*/
+				isOpenSpec: false,
+				type: '',
+				room_id:0
+			}
+		},
+		computed: {
+
+			/*判断增加数量*/
+			isadd: function() {
+				return this.form.show_sku.sum >= this.stock || this.form.show_sku.sum >= this.form.detail.limit_num;
+			},
+
+			/*判断减少数量*/
+			issub: function() {
+				return this.form.show_sku.sum <= 1;
+			}
+		},
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().globalData.vueObj.font_url + "')"
+			});
+			console.log(getApp().globalData.vueObj.font_url);
+			// #endif
+		},
+		watch: {
+			'form.specData': {
+				handler(n, o) {
+					let str = '',
+						select = '';
+					this.isAll = true;
+					if (n) {
+						for (let i = 0; i < n.spec_attr.length; i++) {
+							console.log(this.form.productSpecArr[i])
+							if (this.form.productSpecArr[i] == null) {
+								this.isAll = false;
+								str += n.spec_attr[i].group_name + ' ';
+							} else {
+								n.spec_attr[i].spec_items.forEach(item => {
+									if (this.form.productSpecArr[i] == item.item_id) {
+										select += '\"' + item.spec_value + '\" ';
+									}
+								});
+							}
+						}
+						if (!this.isAll) {
+							str = '请选择: ' + str;
+						} else {
+							select = '已选: ' + select;
+						}
+					}
+					this.selectSpec = this.isAll ? select : str;
+				},
+				deep: true,
+				immediate: true
+			}
+		},
+		methods: {
+			show(e) {
+				this.form = e;
+				this.room_id  = e.room_id;
+				this.popupVisible = true;
+				console.log(this.form)
+				this.initShowSku();
+			},
+			/*初始化*/
+			initShowSku() {
+				this.form.show_sku.sku_image = this.form.detail.image[0].file_path;
+				this.form.show_sku.product_price = this.form.detail.product_price;
+				this.form.show_sku.product_sku_id = 0;
+				this.form.show_sku.line_price = this.form.detail.line_price;
+				this.form.show_sku.stock_num = this.form.detail.product_stock;
+				this.form.show_sku.sum = 1;
+				this.stock = this.form.detail.product_stock;
+			},
+			/*创建订单*/
+			createdOrder() {
+				let product_id = this.form.detail.product_id;
+				let product_num = this.form.show_sku.sum;
+				let product_sku_id = this.form.show_sku.product_sku_id;
+				let room_id = ''
+				if (this.room_id != 0 & this.room_id != '') {
+					room_id = '&room_id=' + this.form.room_id;
+				}
+				uni.navigateTo({
+					url: '/pages/order/confirm-order?product_id=' + product_id + '&product_num=' + product_num +
+						'&product_sku_id=' + product_sku_id + '&order_type=buy' + room_id
+				})
+			},
+			/*确认提交*/
+			confirmFunc() {
+				if (this.form.specData != null) {
+					for (let i = 0; i < this.form.productSpecArr.length; i++) {
+						if (this.form.productSpecArr[i] == null) {
+							uni.showToast({
+								title: '请选择规格',
+								icon: 'none',
+								duration: 2000
+							});
+							return;
+						}
+					}
+				}
+				this.createdOrder();
+			},
+			/*关闭弹窗*/
+			closePopup() {
+				this.room_id  = 0;
+				this.popupVisible = false;
+				this.$emit('close',null)
+			},
+			/*选择属性*/
+			selectAttr(attr_index, item_index) {
+				let self = this;
+				let items = self.form.specData.spec_attr[attr_index].spec_items;
+				let curItem = items[item_index];
+				if (curItem.checked) {
+					curItem.checked = false;
+					self.form.productSpecArr[attr_index] = null;
+				} else {
+					for (let i = 0; i < items.length; i++) {
+						items[i].checked = false;
+					}
+					curItem.checked = true;
+					self.form.productSpecArr[attr_index] = curItem.item_id;
+				}
+
+				for (let i = 0; i < self.form.productSpecArr.length; i++) {
+					if (self.form.productSpecArr[i] == null) {
+						self.initShowSku();
+						return;
+					}
+				}
+
+				// 更新商品规格信息
+				self.updateSpecProduct();
+			},
+			/*更新商品规格信息*/
+			updateSpecProduct() {
+				let self = this;
+				let specSkuId = self.form.productSpecArr.join('_');
+				// 查找skuItem
+				let spec_list = self.form.specData.spec_list,
+					skuItem = spec_list.find((val) => {
+						return val.spec_sku_id == specSkuId;
+					});
+				// 记录product_sku_id
+				// 更新商品价格、划线价、库存
+				if (typeof skuItem === 'object') {
+					self.stock = skuItem.spec_form.stock_num;
+					if (self.form.show_sku.sum > self.stock) {
+						self.form.show_sku.sum = self.stock > 0 ? self.stock : 1;
+					}
+					self.form.show_sku.product_sku_id = specSkuId;
+					self.form.show_sku.product_price = skuItem.spec_form.product_price;
+					self.form.show_sku.line_price = skuItem.spec_form.line_price;
+					self.form.show_sku.stock_num = skuItem.spec_form.stock_num;
+					if (skuItem.spec_form.image_id > 0) {
+						self.form.show_sku.sku_image = skuItem.spec_form.image_path;
+					} else {
+						self.form.show_sku.sku_image = self.form.detail.image[0].file_path;
+					}
+				}
+			},
+			/*商品增加*/
+			add() {
+				if (this.stock <= 0) {
+					return;
+				}
+				if (this.form.show_sku.sum >= this.stock) {
+					uni.showToast({
+						title: '数量超过了库存',
+						icon: 'none',
+						duration: 2000
+					});
+					return false;
+				}
+				if (this.form.detail.limit_num > 0 && this.form.show_sku.sum >= this.form.detail.limit_num) {
+					uni.showToast({
+						title: '数量超过了限购数量',
+						icon: 'none',
+						duration: 2000
+					});
+					return false;
+				}
+				this.form.show_sku.sum++;
+			},
+			/*商品减少*/
+			sub() {
+				if (this.stock <= 0) {
+					return;
+				}
+				if (this.form.show_sku.sum < 2) {
+					uni.showToast({
+						title: '商品数量至少为1',
+						icon: 'none',
+						duration: 2000
+					});
+					return false;
+				}
+				this.form.show_sku.sum--;
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.foot-box {
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid rgba(255, 255, 255, .1);
+		padding: 0 23rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+	}
+
+	.icon.iconfont {
+		font-size: 22rpx;
+		color: #DDDDDD;
+	}
+
+	.more-box {
+		background: rgba(0, 0, 0, .85);
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+	}
+
+	.more-box-list {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 34rpx 107rpx 43rpx 134rpx;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+	}
+
+	.icon.iconfont {
+		color: #FFFFFF;
+	}
+
+	.more-icont {
+		font-size: 46rpx;
+	}
+
+	.Progress {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+	}
+
+	.progress-bar {
+		width: 364rpx;
+		height: 75rpx;
+		margin-left: 193rpx;
+		align-items: center;
+		justify-content: center;
+		margin: auto;
+		padding-top: 30rpx;
+		/* background-color: red; */
+	}
+
+	.progress-bar-slider {
+		width: 364rpx;
+		margin-left: 193rpx;
+	}
+
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+
+	.more-iconbox {
+		width: 69rpx;
+		height: 69rpx;
+		background: rgba(255, 255, 255, .2);
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.more-iconbox-active {
+		background: #8AE4F0;
+	}
+
+	.header {
+		height: 200rpx;
+		position: relative;
+		border-bottom: 1rpx solid #EEEEEE;
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		flex-direction: row;
+		padding: 0 20rpx;
+	}
+
+	.avt {
+		width: 180rpx;
+		height: 180rpx;
+		border: 2rpx solid #FFFFFF;
+		background: #FFFFFF;
+		border-radius: 12rpx;
+		margin-right: 20rpx;
+	}
+
+	.stock {
+		font-size: 26rpx;
+		color: #999999;
+	}
+
+	.close-btn {
+		position: absolute;
+		width: 40rpx;
+		height: 40rpx;
+		top: 40rpx;
+		right: 30rpx;
+	}
+
+	.price {
+		color: #333333;
+		font-weight: bold;
+		font-size: 24rpx;
+	}
+
+	.num {
+		font-size: 40rpx;
+	}
+
+	.old-price {
+		margin-left: 10rpx;
+		font-size: 26rpx;
+		color: #999999;
+		text-decoration: line-through;
+	}
+
+	.body {
+		padding: 20rpx 30rpx 39rpx 30rpx;
+		// max-height: 600rpx;
+		overflow-y: auto;
+	}
+
+	.level-box {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.key {
+		font-size: 24rpx;
+		color: #999999;
+	}
+
+	.icon-box {
+		width: 48rpx;
+		height: 40rpx;
+		background: #e0e0e0;
+	}
+
+	.iconfont {
+		color: #666;
+	}
+
+	.iconfont {
+		color: #CCCCCC;
+	}
+
+	.text-wrap {
+		margin: 0 4rpx;
+		height: 60rpx;
+		border: none;
+		background: #ffffff;
+	}
+
+	.text-wrap-input {
+		padding: 0 10rpx;
+		height: 40rpx;
+		line-height: 40rpx;
+		width: 60rpx;
+		font-size: 26rpx;
+		text-align: center;
+		margin: 0 20rpx;
+	}
+
+	.specs-list {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.specs-list-button {
+		margin-right: 10rpx;
+		margin-bottom: 10rpx;
+		font-size: 24rpx;
+	}
+
+	.confirm-btn {
+		width: 710rpx;
+		height: 80rpx;
+		background-color: $dominant-color;
+		border-radius: 40rpx;
+		margin-left: 20rpx;
+		margin-bottom: 55rpx;
+		color: #FFFFFF;
+		line-height: 80rpx;
+		font-size: 32rpx;
+		border: $dominant-color 1rpx solid;
+	}
+
+	.btn-checked {
+		border: 1rpx solid;
+		color: $dominant-color;
+		border-color: $dominant-color;
+		border-radius: 6rpx;
+		font-size: 26rpx;
+		background-color: #FFFFFF;
+	}
+
+	.btn-checked-text {
+		color: $dominant-color;
+		font-size: 26rpx;
+	}
+
+	.btn-checke {
+		border: 1rpx solid #D9D9D9;
+		border-radius: 6rpx;
+		font-size: 26rpx;
+		color: #333333;
+		background-color: #FFFFFF;
+	}
+
+	.btn-checke-text {
+		color: #333333;
+		font-size: 26rpx;
+	}
+
+	.count_choose {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		flex-direction: row;
+	}
+</style>

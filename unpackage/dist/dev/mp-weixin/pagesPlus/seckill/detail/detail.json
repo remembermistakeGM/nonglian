@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "秒杀详情",
+  "usingComponents": {
+    "spec": "./popup/Spec",
+    "countdown": "../../../components/countdown/countdown",
+    "mpservice": "../../../components/mpservice/Mpservice",
+    "guarantee": "../../../components/guarantee"
+  }
+}

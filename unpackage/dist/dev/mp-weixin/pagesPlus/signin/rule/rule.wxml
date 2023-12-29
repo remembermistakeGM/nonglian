@@ -1,0 +1,1 @@
+<view class="p30"><view class="title"></view><view class="content p30 bg-white f30 lh200 radius8"><rich-text nodes="{{a}}"/></view></view>

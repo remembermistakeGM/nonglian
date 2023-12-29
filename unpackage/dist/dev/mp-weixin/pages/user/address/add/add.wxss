@@ -1,0 +1,22 @@
+
+page {
+		background-color: #FFFFFF;
+}
+.address-form {
+		/* border-top: 16rpx solid #f2f2f2; */
+}
+.address-form .key-name {
+		width: 220rpx;
+		font-size: 32rpx
+}
+.address-form .btn-red {
+		height: 88rpx;
+		line-height: 88rpx;
+		border-radius: 44rpx;
+		box-shadow: 0 8rpx 16rpx 0 rgba(226, 35, 26, .6);
+}
+.addBtn {
+		height: 80rpx;
+		line-height: 80rpx;
+		border-radius: 40rpx;
+}

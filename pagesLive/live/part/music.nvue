@@ -1,0 +1,229 @@
+<template>
+	<view class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer">
+			<div class="more-box p-0-20" @tap.stop="">
+				<scroll-view scroll-x="true" class="category_list">
+					<view class="category_item" v-for="(item,index) in listData" :key='index' @click="img_index = index"
+						:class="img_index == index?'active':''">
+						<view class="category_item-active-after" v-if="img_index == index"></view><text
+							class="white f28">{{item.name}}</text>
+					</view>
+				</scroll-view>
+				<scroll-view scroll-x="true" class="more-box-list"  v-if="listData[img_index]&&listData[img_index].list">
+					<view class="more-box-list-item" v-for="(item,index) in listData[img_index].list"
+						@click="playBgm(item.link,index)">
+						<view class="item-image" :class="bg_index==index?'more-box-list-item-active':''">
+							<image class="more-box-list-image"
+								:src="item.image_link"
+								mode="aspectFill"></image>
+						</view>
+						<text class="f26 white mb10">{{item.name}}</text>
+						<text class="f22 white">{{item.songster}}</text>
+					</view>
+				</scroll-view>
+				<view class="d-c-c f-d-i foot-box">
+					<text class="grayD f22 " @tap="stopBg">停止选择音乐</text>
+				</view>
+			</div>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				img_index: 0,
+				popupVisible: false,
+				listData: [{
+					list: []
+				}],
+				bg_index: -1
+			}
+		},
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().globalData.vueObj.font_url + "')"
+			});
+			// #endif
+		},
+		methods: {
+			show() {
+				this.getData();
+				this.popupVisible = true;
+			},
+			getData() {
+				let self = this;
+				getApp()._get('live.RoomApply/audioInfo', {}, (res) => {
+					console.log(res)
+					self.listData = res.data.list;
+				})
+			},
+			playBgm(e, i) {
+				this.bg_index = i;
+				this.$emit('liveSet', e);
+			},
+			stopBg() {
+				this.$emit('liveSet', '');
+				this.img_index = 0;
+				this.bg_index = -1;
+			},
+			close() {
+				this.$emit('close');
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.foot-box {
+		width: 710rpx;
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid;
+		padding: 0 23rpx;
+		border-color: rgba(255, 255, 255, .1);
+		text-align: center;
+	}
+
+	.foot-box .icon.iconfont {
+		font-size: 22rpx;
+		color: #DDDDDD;
+	}
+
+	.more-box {
+		background: rgba(0, 0, 0, .85);
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+		box-sizing: border-box;
+	}
+
+	.more-box-list {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		padding: 25rpx 0 53rpx 0;
+	}
+
+	.more-box-list-item {
+		width: 196rpx;
+		border-radius: 10rpx;
+		flex-shrink: 0;
+		margin-right: 47rpx;
+		color: #DDDDDD;
+	}
+
+	.item-image {
+		width: 196rpx;
+		height: 192rpx;
+		border-radius: 10rpx;
+		border: 3rpx solid rgba(0, 0, 0, 0);
+		padding: 6rpx;
+		margin-bottom: 4rpx;
+	}
+
+	.more-box-list-image {
+		width: 178rpx;
+		height: 174rpx;
+		border-radius: 10rpx;
+	}
+
+	.more-box-list-item-active {
+		border: 3rpx solid #8AE4F0;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+	}
+
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+
+	.category_list {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		height: 95rpx;
+		border-bottom: 1rpx solid;
+		border-color: rgba(255, 255, 255, .1);
+		overflow-x: auto;
+	}
+
+	.category_item {
+		flex-shrink: 0;
+		margin: 0 64rpx;
+		font-size: 28rpx;
+		color: #DDDDDD;
+		height: 95rpx;
+		line-height: 95rpx;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.category_item-active-after {
+		content: '';
+		position: absolute;
+		bottom: 1rpx;
+		left: 0;
+		width: 32rpx;
+		height: 5rpx;
+		background: #DDDDDD;
+		border-radius: 3rpx;
+	}
+</style>

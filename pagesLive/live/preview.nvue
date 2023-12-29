@@ -1,0 +1,173 @@
+<template>
+	<view v-if="isShow">
+		<view class="header" :style="'top:' + statusBarH + 'px;'">
+			<view class="header-close-btn" @tap="closeLive"><image class="header-close-img" src="../../static/live/close.png" mode=""></image></view>
+		</view>
+		<view class="right-tools" :style="{ top: statusBarH }">
+			<view class="right-tool-item" @tap="switchCamera">
+				<image class="right-tool-item-image" src="../../static/live/flip.png" mode=""></image>
+				<text class="right-tool-item-name">翻转</text>
+			</view>
+			<view class="right-tool-item" @tap="openBeauty">
+				<image class="right-tool-item-image" src="../../static/live/beautify.png" mode=""></image>
+				<text class="right-tool-item-name">美化</text>
+			</view>
+			<view class="right-tool-item" @tap="openDefinition">
+				<image class="right-tool-item-image" src="../../static/live/tool.png" mode=""></image>
+				<text class="right-tool-item-name">清晰度</text>
+			</view>
+		</view>
+		<view class="start-btn" :style="'top:' + winHeight * 0.72 + 'px;'" @tap="startFunc"><text class="white f32">开始视频直播</text></view>
+		<!-- <button class="start-btn" :style="'top:'+(winHeight*0.72)+'px;'" @tap="startFunc">
+			<text class="white f32">开始视频直播</text>
+		</button> -->
+		<!-- 美颜 -->
+		<Beauty ref="beauty" @liveSet="BeautyFunc"></Beauty>
+		<!-- 清晰度 -->
+		<Definition ref="definition" @liveSet="DefinitionFunc"></Definition>
+		<!-- 背景 -->
+		<Background ref="background" @liveSet="BackgroundFunc"></Background>
+	</view>
+</template>
+
+<script>
+import Beauty from './part/beauty.nvue';
+import Definition from './part/definition.nvue';
+import Background from './part/background.nvue';
+export default {
+	components: {
+		Beauty,
+		Definition,
+		Background
+	},
+	data() {
+		return {
+			statusBarH: 0,
+			headerBarH: 0,
+			winHeight: 0,
+			winWidth: 0
+		};
+	},
+	props: ['isShow'],
+	created() {
+		this.initWind();
+	},
+	methods: {
+		initWind() {
+			let _sH = uni.getSystemInfoSync().statusBarHeight;
+			let _hH = _sH + 50;
+			let _wH = uni.getSystemInfoSync().windowHeight;
+			let _wW = uni.getSystemInfoSync().windowWidth;
+			this.statusBarH = _sH;
+			this.headerBarH = _hH;
+			this.winHeight = _wH;
+			this.winWidth = _wW;
+		},
+		/* 设置项 */
+		openBeauty() {
+			this.$refs.beauty.show();
+		},
+		openDefinition() {
+			this.$refs.definition.show();
+		},
+		openBackground() {
+			this.$refs.background.show();
+		},
+		BeautyFunc(e) {
+			console.log('BeautyFuncBeautyFuncBeautyFunc');
+			console.log(e);
+			this.$emit('setBeautyOptions', e);
+		},
+		DefinitionFunc(e) {
+			this.$emit('setDefinition', e);
+		},
+		BackgroundFunc(e) {
+			console.log('BackgroundFunc');
+			console.log(e);
+			this.$emit('changeVirtualBackground', e);
+		},
+		closeLive() {
+			this.$emit('close');
+		},
+		startFunc() {
+			this.$emit('openLive');
+		},
+		startPreview() {
+			this.$emit('startPreview');
+		},
+		switchCamera() {
+			this.$emit('switchCamera');
+		}
+	}
+};
+</script>
+
+<style lang="scss">
+$dominant-color: #e2231a;
+.live-bg {
+	width: 750rpx;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 0;
+}
+
+.header {
+	z-index: 99;
+	position: fixed;
+	width: 750rpx;
+}
+
+.header-close-btn {
+	width: 46rpx;
+	height: 46rpx;
+	margin-left: 27rpx;
+	margin-top: 48rpx;
+}
+
+.header-close-img {
+	width: 46rpx;
+	height: 46rpx;
+}
+
+.start-btn {
+	position: fixed;
+	left: 149rpx;
+	right: 0;
+	width: 452rpx;
+	height: 82rpx;
+	background: $dominant-color;
+	font-size: 32rpx;
+	color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-color: $dominant-color;
+}
+
+.right-tools {
+	position: fixed;
+	right: 28rpx;
+	padding-top: var(--status-bar-height);
+	margin-top: 108rpx;
+}
+
+.right-tool-item {
+	margin-bottom: 55rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.right-tool-item-image {
+	width: 55rpx;
+	height: 55rpx;
+	margin-bottom: 16rpx;
+}
+
+.right-tool-item-name {
+	font-size: 32rpx;
+	color: #ffffff;
+}
+</style>

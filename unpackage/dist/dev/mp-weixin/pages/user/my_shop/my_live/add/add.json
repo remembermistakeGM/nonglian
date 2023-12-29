@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "直播预告",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "upload": "../../../../../components/upload/upload",
+    "picker-view-datetime": "../../../../../components/picker-view-datetime/pickerViewDatetime",
+    "products": "./dialog/Products"
+  }
+}

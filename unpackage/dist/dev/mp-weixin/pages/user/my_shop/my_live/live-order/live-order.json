@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "直播订单",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../../../../components/uni-load-more"
+  }
+}

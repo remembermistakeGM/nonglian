@@ -1,0 +1,210 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+page {
+  background-color: #f1f1f1;
+}
+.mb80 {
+  margin-bottom: 80rpx;
+}
+.uLive_top {
+  position: fixed;
+  z-index: 1000;
+  background: #f5f5f5;
+  top: 0;
+  left: 0;
+}
+.top_list {
+  padding: 26rpx;
+}
+.top_item {
+  text-align: center;
+  position: relative;
+  margin-right: 22rpx;
+}
+.top_item_img {
+  width: 120rpx;
+  height: 120rpx;
+  padding: 4rpx;
+  border-radius: 50%;
+  border: 2rpx solid #da7399;
+  margin-bottom: 20rpx;
+}
+.live_status {
+  position: absolute;
+  top: 105rpx;
+  left: 14rpx;
+  width: 105rpx;
+  height: 30rpx;
+  background-color: #f2517b;
+  color: #ffffff;
+  font-size: 20rpx;
+  text-align: center;
+  line-height: 30rpx;
+  border-radius: 15rpx;
+  letter-spacing: 2rpx;
+}
+.live_top_name {
+  letter-spacing: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 132rpx;
+  text-align: center;
+}
+.top_item_img image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+}
+.type_item {
+  padding: 0 20rpx;
+  flex-shrink: 0;
+  height: 44rpx;
+  line-height: 44rpx;
+  font-size: 25rpx;
+  color: #000000;
+  text-align: center;
+  margin-left: 19rpx;
+  letter-spacing: 3rpx;
+}
+.type_item_active {
+  padding: 0 20rpx;
+  flex-shrink: 0;
+  height: 44rpx;
+  line-height: 44rpx;
+  font-size: 25rpx;
+  color: #ffffff;
+  text-align: center;
+  margin-left: 19rpx;
+  background-color: #fb4a74;
+  border-radius: 22rpx;
+  letter-spacing: 3rpx;
+}
+.live_content {
+  padding-top: 30rpx;
+  background-color: #f6f6f6;
+}
+.live_list {
+  padding: 29rpx 26rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.live_list .live_item {
+  position: relative;
+  width: 343rpx;
+  height: 431rpx;
+  height: 591rpx;
+  background-color: #ffffff;
+  margin-bottom: 16rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+.live_item_img image {
+  width: 343rpx;
+  height: 431rpx;
+}
+.live_item_b {
+  padding: 19rpx 16rpx;
+}
+.live_item_blt {
+  width: 182rpx;
+  font-size: 26rpx;
+  line-height: 39rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-bottom: 5rpx;
+}
+.live_item_blbimg image {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
+.live_item_blbtxt {
+  font-size: 21rpx;
+  color: #a8a8a8;
+}
+.live_item_br image {
+  width: 90rpx;
+  height: 90rpx;
+  border-radius: 10rpx;
+}
+.live_item_brb {
+  height: 32rpx;
+  line-height: 32rpx;
+  font-size: 20rpx;
+  color: red;
+}
+.live_item_status {
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  height: 30rpx;
+  line-height: 30rpx;
+  border-radius: 15rpx;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding-right: 11rpx;
+  font-size: 19rpx;
+  top: 15rpx;
+  left: 16rpx;
+}
+.live_item_statusL {
+  color: #ffffff;
+  height: 30rpx;
+  line-height: 30rpx;
+  border-radius: 15rpx;
+  padding: 0 10rpx;
+  background-color: #60d785;
+  margin-right: 5rpx;
+}
+.reLive {
+  background-color: #ff6633;
+}
+.onLive {
+  background-color: #fb4a74;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+.live_item_statusR {
+  color: #ffffff;
+}
+.live_item_statusL image {
+  width: 30rpx;
+  height: 30rpx;
+}
+.live_item_brbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

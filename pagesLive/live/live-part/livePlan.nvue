@@ -1,0 +1,364 @@
+<template>
+	<view class="wrap__giftPanel" v-if="showPlanView">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<scroll-view class="wrapgift-body">
+			<div>
+				<div class="plan-box">
+					<div class="gift-container-head plan-box-head">
+						<text class="f30">{{giftName}}：</text>
+						<text class="f30 yellow">{{userInfo.gift_money}}</text>
+					</div>
+					<div class="plan-cells">
+						<div :class="choose_id==item.plan_id?'active_border':'plan-cell-list'"
+							v-for="(item,index) in planList" :key="index" @tap="chooseplan(item)">
+							<div class="plan-list-title">
+								<text class="rose f30">{{item.real_money}}</text><text class="f28">{{giftName}}</text>
+							</div>
+							<div class="plan-list-rmb"><text class="f30 gray9">{{item.money}}元</text></div>
+						</div>
+					</div>
+					<div class="w100">
+						<div class="pan_btn"  @click="submit"><text class="white">立即充值</text></div>
+					</div>
+					<div class="plan-xieyi">
+						<!-- <text class="f28">充值代表已阅读并同意</text> <text class="f28 yellow">《用户充值协议》</text> -->
+					</div>
+				</div>
+			</div>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+	import {
+		pay
+	} from '@/common/pay.js';
+	export default {
+		data() {
+			return {
+				showPlanView: false,
+				/*是否打开充值*/
+				open_plan: false,
+				/*个人信息*/
+				userInfo: {},
+				/*礼物币名称*/
+				planList: [],
+				/*10余额，20微信支付*/
+				payType: 20,
+				choose_id: 0
+			}
+		},
+		props: ['giftName'],
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().globalData.vueObj.font_url + "')"
+			});
+			console.log(getApp().globalData.vueObj.font_url);
+			// #endif
+		},
+		methods: {
+			show() {
+				this.showPlanView = true;
+				this.getUser();
+				this.getPlan();
+			},
+			/*请求对象*/
+			getRequest() {
+				let self = this;
+				// #ifdef APP-PLUS
+				return getApp().globalData.vueObj;
+				// #endif
+				// #ifndef APP-PLUS
+				return self;
+				// #endif
+			},
+			/*获取用户信息*/
+			getUser() {
+				let self = this;
+				self.getRequest()._get('user.user/detail', {}, function(res) {
+					self.userInfo = res.data.userInfo;
+				});
+			},
+			/*获取礼物类别*/
+			getPlan() {
+				let self = this;
+				self.getRequest()._get('plus.live.plan/lists', {}, function(res) {
+					self.planList = res.data.list;
+				});
+			},
+			chooseplan(item) {
+				this.choose_id = item.plan_id;
+			},
+			/*充值*/
+			submit() {
+				let self = this;
+				uni.showLoading({
+					title: '加载中'
+				});
+				self.getRequest()._post('plus.live.plan/submit', {
+					plan_id: self.choose_id
+				}, function(result) {
+					getApp().gotoPage('/pages/order/cashier?order_id=' + result.data.order_id+ '&order_type=30');
+				});
+			},
+			/**
+			 * 显示失败提示框
+			 */
+			showError(msg, callback) {
+				uni.showModal({
+					title: '友情提示',
+					content: msg,
+					showCancel: false,
+					success: function(res) {
+						callback && callback();
+					}
+				});
+			},
+
+			/**
+			 * 显示失败提示框
+			 */
+			showSuccess(msg, callback) {
+				uni.showModal({
+					title: '友情提示',
+					content: msg,
+					showCancel: false,
+					success: function(res) {
+						callback && callback();
+					}
+				});
+			},
+			changeType(type) {
+				this.payType = type;
+			},
+			close() {
+				this.showPlanView = false;
+				this.$emit('closePlan');
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+	}
+
+	.wrapgift-body {
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 1001;
+	}
+
+	.gift-container-head {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		padding: 20rpx;
+	}
+
+	.chongzhi {
+		height: 70rpx;
+		line-height: 70rpx;
+	}
+
+	.plan-box {
+		background-color: #FFFFFF;
+		border-top-left-radius: 20rpx;
+		border-top-right-radius: 20rpx;
+		/* height: 720rpx; */
+	}
+
+	.plan-cells {
+		width: 750rpx;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		padding-top: 0;
+	}
+
+	.plan-cell-list {
+		display: flex;
+		flex-direction: column;
+		width: 225rpx;
+		margin: 0 10rpx 20rpx;
+		align-items: center;
+		justify-content: center;
+		background-color: #efefef;
+		padding: 30rpx 0;
+		border-color: #FFFFFF;
+		border-style: solid;
+		border-width: 1px;
+		border-radius: 5rpx;
+	}
+
+	.plan-list-title {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+	}
+
+	.plan-list-rmb {
+		margin-top: 10rpx;
+	}
+
+	.plan-box-head {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+
+	.plan-head-title {
+		margin-left: 200rpx;
+		padding: 10rpx 0;
+	}
+
+	.plan-xieyi {
+		text-align: center;
+		padding: 30rpx 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	.plan-xieyi {
+		text-align: center;
+		padding: 30rpx 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	.paypop {
+		position: absolute;
+		top: 0;
+		z-index: 1002;
+		width: 750rpx;
+		height: 600rpx;
+		right: 0;
+		left: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.paypop-cont {
+		background-color: #FFFFFF;
+		border-radius: 16rpx;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex-direction: column;
+		width: 750rpx;
+		padding-bottom: 20rpx;
+	}
+
+	.paypop-list {
+		width: 750rpx;
+		padding: 30rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid #f6f6f6;
+		box-sizing: border-box;
+	}
+
+	.pay-body {
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+
+	.icon-weixin {
+		color: #04BE01;
+	}
+
+	.icon-yue1 {
+		color: #edde89;
+	}
+
+	.icon-icon_xianshi-xian:before {
+		content: "\e658";
+	}
+
+	.icon-danxuanxuanzhong:before {
+		content: '\e623';
+	}
+
+	.icon-xuanze-active {
+		color: #55bb36;
+	}
+
+	.w100 {
+		width: 750rpx;
+	}
+
+	.pan_btn {
+		width: 695rpx;
+		height: 85rpx;
+		line-height: 85rpx;
+		align-items: center;
+		justify-content: center;
+		color: #FFFFFF;
+		font-size: 28rpx;
+		text-align: center;
+		background-color: #fc3e5a;
+		border-radius: 5rpx;
+		overflow: hidden;
+		cursor: pointer;
+		text-decoration: none;
+		position: relative;
+		display: block;
+		border-width: 0;
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-left: 27.5rpx;
+		margin-right: auto;
+		padding-left: 14px;
+		padding-right: 14px;
+		box-sizing: border-box;
+	}
+
+	.active_border {
+		display: flex;
+		flex-direction: column;
+		width: 225rpx;
+		margin: 0 10rpx 20rpx;
+		align-items: center;
+		justify-content: center;
+		background-color: #efefef;
+		padding: 30rpx 0;
+		border-color: #fc3e5a;
+		border-style: solid;
+		border-width: 1px;
+		border-radius: 5rpx;
+	}
+</style>

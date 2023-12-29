@@ -1,0 +1,57 @@
+
+.usable-coupon .popup-bg {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.6);
+		z-index: 99;
+}
+.usable-coupon .main {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		min-height: 200rpx;
+		background-color: #fff;
+		transform: translate3d(0, 980rpx, 0);
+		transition: transform 0.2s cubic-bezier(0, 0, 0.25, 1);
+		bottom: env(safe-area-inset-bottom);
+		z-index: 99;
+}
+.usable-coupon .main {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		min-height: 200rpx;
+		background-color: #fff;
+		transform: translate3d(0, 980rpx, 0);
+		transition: transform 0.2s cubic-bezier(0, 0, 0.25, 1);
+		bottom: env(safe-area-inset-bottom);
+		z-index: 99;
+}
+.usable-coupon.open .main {
+		transform: translate3d(0, 0, 0);
+}
+.usable-coupon.close .popup-bg {
+		display: none;
+}
+.coupon-item-red .operation {
+		/* background: #fdf1df; */
+}
+.coupon-btns .btn-cancel {
+		height: 88rpx;
+		line-height: 88rpx;
+		font-size: 30rpx;
+		background: #999999;
+		color: #ffffff;
+		border-radius: 0;
+}
+.coupon-item .w100 {
+		padding: 0 75rpx;
+}
+.b-radio {
+		border: 1rpx solid #FFFFFF;
+		border-radius: 30rpx;
+		padding: 10rpx 30rpx;
+}

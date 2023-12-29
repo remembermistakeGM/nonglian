@@ -1,0 +1,48 @@
+
+.look-evaluate .comment-list {
+		background: #ffffff;
+}
+.look-evaluate .comment-list .item {
+		padding-top: 30rpx;
+		padding-bottom: 30rpx;
+		border-top: none;
+		border-bottom: 1px solid #dddddd;
+}
+.look-evaluate .iconfont {
+		border-radius: 50%;
+		font-size: 40rpx;
+		text-align: center;
+}
+.look-evaluate .icon-pingjiahaoping {
+		color: #f42222;
+}
+.look-evaluate .icon-pingjiazhongping {
+		color: #f2b509;
+}
+.look-evaluate .icon-pingjiachaping {
+		color: #999999;
+}
+.look-evaluate .imgs {
+		flex-wrap: wrap;
+}
+.look-evaluate .imgs .box {
+		margin-top: 10rpx;
+		margin-right: 10rpx;
+}
+.look-evaluate .imgs .box:nth-child(3n) {
+		margin-right: 0;
+}
+.look-evaluate .imgs .box,
+	.look-evaluate .imgs .box image {
+		width: 210rpx;
+		height: 210rpx;
+}
+.popimg {
+		position: fixed;
+		width: 750rpx;
+		height: 100vh;
+		background-color: #000000;
+		top: 0;
+		left: 0;
+		z-index: 2000;
+}

@@ -1,0 +1,189 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.product-popup .popup-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+}
+.product-popup .main {
+  position: fixed;
+  width: 100%;
+  min-height: 200rpx;
+  background-color: #fff;
+  transform: translate3d(0, 980rpx, 0);
+  transition: transform 0.2s cubic-bezier(0, 0, 0.25, 1);
+  bottom: env(safe-area-inset-bottom);
+  border-radius: 12rpx;
+  z-index: 99;
+}
+.product-popup.open .main {
+  transform: translate3d(0, 0, 0);
+  z-index: 99;
+}
+.product-popup.close .popup-bg {
+  display: none;
+}
+.product-popup.close .main {
+  display: none;
+  z-index: -1;
+}
+.product-popup .header {
+  min-height: 120rpx;
+  padding: 40rpx 0 40rpx 250rpx;
+  position: relative;
+  border-bottom: 1px solid #eeeeee;
+}
+.product-popup .header .avt {
+  position: absolute;
+  top: 10rpx;
+  left: 30rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border: 2px solid #ffffff;
+  background: #ffffff;
+  border-radius: 12rpx;
+}
+.product-popup .header .stock {
+  font-size: 26rpx;
+  color: #999999;
+}
+.product-popup .close-btn {
+  position: absolute;
+  width: 40rpx;
+  height: 40rpx;
+  top: 40rpx;
+  right: 30rpx;
+}
+.product-popup .price {
+  height: 80rpx;
+  color: #e2231a;
+  font-size: 30rpx;
+}
+.product-popup .price .num {
+  padding: 0 4rpx;
+  font-size: 50rpx;
+}
+.product-popup .old-price {
+  margin-left: 10rpx;
+  font-size: 30rpx;
+  color: #999999;
+  text-decoration: line-through;
+}
+.product-popup .body {
+  padding: 20rpx 30rpx 39rpx 30rpx;
+  overflow-y: auto;
+  padding-bottom: 88rpx;
+}
+.product-popup .level-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.product-popup .level-box .key {
+  font-size: 24rpx;
+  color: #999999;
+}
+.product-popup .level-box .icon-box {
+  width: 48rpx;
+  height: 40rpx;
+  background: #e0e0e0;
+}
+.product-popup .num-wrap .iconfont {
+  color: #666;
+}
+.product-popup .num-wrap.no-stock .iconfont {
+  color: #cccccc;
+}
+.product-popup .level-box .text-wrap {
+  margin: 0 4rpx;
+  height: 60rpx;
+  border: none;
+  background: #ffffff;
+}
+.product-popup .level-box .text-wrap input {
+  padding: 0 10rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  width: 80rpx;
+  text-align: center;
+  font-size: 32rpx;
+}
+.specs .specs-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.specs .specs-list button {
+  margin-left: 0;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+}
+.specs .specs-list button:after,
+.product-popup .btns button,
+.product-popup .btns button:after {
+  border: 0;
+  border-radius: 0;
+  margin-bottom: 55rpx;
+}
+.product-popup .btns .confirm-btn {
+  width: 710rpx;
+  height: 80rpx;
+  background: linear-gradient(90deg, #FF6B6B 4%, #F6220C 100%);
+  border-radius: 40rpx;
+  margin: 0 auto;
+  margin-bottom: 55rpx;
+  background-color: #FFFFFF;
+  color: #FFFFFF;
+  line-height: 80rpx;
+  font-size: 32rpx;
+}
+.select_spec {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-checked {
+  border: 1px solid #F6220C;
+  border-radius: 6px;
+  color: #F6220C;
+  font-size: 26rpx;
+  background-color: #FFFFFF;
+}
+.btn-checke {
+  border: 1rpx solid #D9D9D9;
+  border-radius: 6rpx;
+  font-size: 26rpx;
+  color: #333333;
+  background-color: #FFFFFF;
+}

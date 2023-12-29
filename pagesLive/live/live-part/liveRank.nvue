@@ -1,0 +1,221 @@
+<template>
+	<view v-if="popupVisible" class="popup-footer">
+		<view class="pop__ui_panel">
+			<view class="pop__ui_mask" @tap="close"></view>
+			<view class="pop__ui_child anim-footer" @tap.stop="">
+				<div>
+					<div class="add-product-head p20 f30">
+						<text class="f30">礼物排行</text>
+					</div>
+					<scroll-view scroll-y="true" style="height: 700rpx;">
+						<list class="add-product-list" :loadmoreoffset="10"
+							@loadmore="loadmoreFunc" v-if="listData.length > 0">
+							<cell class="add-product-item d-s-s" v-for="(item, index) in listData" :key="index">
+								    <text class="gift-num ml20 white f26 fir" v-if="index==0">{{index+1}}</text>
+								    <text class="gift-num ml20 white f26 sec" v-if="index==1">{{index+1}}</text>
+								    <text class="gift-num ml20 white f26 thr" v-if="index==2">{{index+1}}</text>
+								    <text class="gift-num ml20 white f26" v-if="index!=0&&index!=1&&index!=2">{{index+1}}</text>
+									<view>
+										<image class="add-product-picture-image ml20" :src="item.user.avatarUrl" mode="aspectFill"></image>
+									</view>
+								    <text class="user-name f30 ml20">{{ item.user.nickName }}</text>
+									<text class="rose f30 f-w mr20 red mt30">+{{item.gift_num}}</text>
+							</cell>
+						</list>
+						<div class="gift-null" v-if="listData.length <= 0 &&listData!=''">
+							<text class="f32">暂无记录</text>
+						</div>
+					</scroll-view>
+					
+				</div>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				/*底部加载*/
+				loading: true,
+				/*没有更多*/
+				no_more: false,
+				/*商品列表*/
+				listData: [],
+				/*当前页面*/
+				page: 1,
+				/*一页多少条*/
+				list_rows: 10,
+			}
+		},
+		props: ['room_id'],
+		methods: {
+			/*请求对象*/
+			getRequest(){
+				let self = this;
+				// #ifdef APP-PLUS
+				return getApp().globalData.vueObj;
+				// #endif
+				// #ifndef APP-PLUS
+				return self;
+				// #endif
+			},
+			show() {
+				this.popupVisible = true;
+				this.getRank();
+			},
+			/*开始*/
+			getRank() {
+				this.loading = true;
+				this.no_more = false;
+				this.listData = [];
+				this.page = 1;
+				this.list_rows = 10;
+				this.getData();
+			},
+			
+			/*获取数据*/
+			getData() {
+				let self = this;
+				let page = self.page;
+				let list_rows = self.list_rows;
+				console.log(self.room_id);
+				self.getRequest()._get(
+					'plus.live.room/user_gift',
+					{
+						page: page || 1,
+						list_rows: list_rows,
+						room_id:self.room_id
+					},
+					function(res) {
+						self.loading = false;
+						self.listData = self.listData.concat(res.data.list.data);
+						self.last_page = res.data.list.last_page;
+						if (res.data.list.last_page <= 1) {
+							self.no_more = true;
+						}
+					}
+				);
+			},
+			
+			/*可滚动视图区域到底触发*/
+			loadmoreFunc() {
+				let self = this;
+				self.bottomRefresh = true;
+				self.page++;
+				self.loading = true;
+				if (self.page > self.last_page) {
+					self.loading = false;
+					self.no_more = true;
+					return;
+				}
+				self.getData();
+			},
+			close() {
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.pop__ui_mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+	}
+
+	.pop__ui_head {
+		border-style: solid;
+		border-color: #ebebeb;
+		border-bottom-width: 1upx;
+		font-size: 28upx;
+		font-weight: 700;
+		padding: 30upx;
+		text-align: left;
+	}
+	
+	.add-product-head {
+		background-color: #eeeeee;
+		flex-direction: row;
+	}
+	
+	.add-product-list {
+		width: 750rpx;
+		height: 700rpx;
+	}
+
+	.add-product-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		border-bottom-width: 1px;
+		border-bottom-color: #F6F6F6;
+		border-bottom-style: solid;
+		padding: 15rpx 0;
+
+	}
+
+	.gift-num {
+		width: 50rpx;
+		height: 50rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 50rpx;
+		background-color: #e3416d;
+		text-align: center;
+		line-height: 50rpx;
+		margin-top: 10rpx;
+	}
+
+	.add-product-picture-image {
+		width: 100rpx;
+		height: 100rpx;
+		border-radius: 50%;
+	}
+
+	.user-name {
+		display: flex;
+		flex: 1;
+		margin-top: 30rpx;
+	}
+
+	.gift-null {
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 600rpx;
+	}
+	.fir{
+		background-color: #df372a;
+	}
+	.sec{
+		background-color: #ff721b;
+	}
+	.thr{
+		background-color: #e4a347;
+	}
+</style>

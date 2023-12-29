@@ -1,0 +1,12 @@
+
+.border-box.data-v-64ba9dfa{
+		border: 1rpx solid #CACACA;
+}
+picker-view.data-v-64ba9dfa {
+	width: 100%;
+	height: 216rpx;
+	text-align: center;
+	line-height: 70rpx;
+	padding: 0;
+	box-sizing: border-box;
+}

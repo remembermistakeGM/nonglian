@@ -1,0 +1,44 @@
+
+page{
+		background-color: #FFFFFF;
+}
+.apply-agent .banner {
+		background-repeat: no-repeat;
+		background-size: 100%;
+}
+.apply-agent .banner image {
+		width: 750rpx;
+		height: 348rpx;
+}
+.form-wrap {
+		background: #FFFFFF;
+		box-shadow: 0 0 8rpx 0 rgba(0, 0, 0, .2);
+}
+.form-item {
+		padding: 20rpx 0;
+		/* margin-bottom: 20rpx; */
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		font-size: 28rpx;
+		height: 100rpx;
+		box-sizing: border-box;
+}
+.form-item .field-name {
+		width: 180rpx;
+}
+.form-item input {
+		font-size: 28rpx;
+}
+.agreement-content {
+		max-height: 60vh;
+		overflow-y: auto;
+}
+.apply-agent .btn-red {
+		width: 600rpx;
+		height: 88rpx;
+		line-height: 88rpx;
+		border-radius: 44rpx;
+		background: #FF5649;
+		border-color: #FF5649;
+}

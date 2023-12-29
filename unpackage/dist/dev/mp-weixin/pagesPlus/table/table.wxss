@@ -1,0 +1,93 @@
+
+.table-item {
+		margin-bottom: 16rpx;
+		background-color: #FFFFFF;
+		border-radius: 8rpx;
+		padding: 26rpx;
+		box-sizing: border-box;
+}
+.make-top {
+		font-size: 26rpx;
+		color: #333333;
+		margin-bottom: 33rpx;
+		font-weight: 600;
+}
+.uni-list {
+		flex: 1;
+}
+.radio_group {
+		width: 44rpx;
+		height: 44rpx;
+		box-sizing: border-box;
+		border-radius: 50%;
+		background-color: #ffffff;
+		border: 2rpx solid #E2231A;
+}
+.radio_group.active {
+		background-color: #ffffff;
+		border: 11rpx solid #E2231A;
+}
+.selectpicker {
+		width: 693rpx;
+		height: 65rpx;
+		line-height: 65rpx;
+		padding: 0 23rpx;
+		box-sizing: border-box;
+		border: 2rpx solid #BFBFBF;
+		border-radius: 5rpx;
+		font-size: 26rpx;
+		font-weight: 500;
+		color: #575757;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+}
+.selectpicker .jiantou {
+		color: #575757;
+		font-size: 22rpx;
+}
+.textarea-box {
+		width: 695rpx;
+		border: 2rpx solid #BFBFBF;
+		border-radius: 5rpx;
+		font-size: 26rpx;
+		font-weight: 500;
+		color: #575757;
+		padding: 26rpx;
+		box-sizing: border-box;
+}
+.table-item-box {
+		width: 695rpx;
+		border: 2rpx solid #BFBFBF;
+		border-radius: 5rpx;
+		font-size: 26rpx;
+		font-weight: 500;
+		color: #575757;
+		padding: 0 15rpx;
+		box-sizing: border-box;
+}
+.btn-red {
+		width: 160rpx;
+		height: 60rpx;
+		border-radius: 12rpx;
+		padding: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 26rpx;
+}
+.submit {
+		width: 699rpx;
+		height: 93rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: #EE1413;
+		box-shadow: 7rpx 12rpx 13rpx 0rpx #EE141309;
+		border-radius: 10rpx;
+		font-size: 32rpx;
+		font-family: PingFang;
+		font-weight: 800;
+		color: #FFFFFF;
+		margin: 70rpx auto;
+}

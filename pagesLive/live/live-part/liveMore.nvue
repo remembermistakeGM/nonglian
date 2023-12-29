@@ -1,0 +1,217 @@
+<template>
+	<view class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer">
+			<div class="progress-bar" v-if="showSlider" @tap.stop="">
+				<slider :value="value" activeColor="#f72b6c" backgroundColor="#FFFFFF" block-color="#FFFFFF" @change="sliderChange"
+				 :min="0" :max="9" show-value />
+			</div>
+			<div class="more-box" @tap.stop="">
+				<div class="more-list" :class="{'more-list-active': activeIndex == 0}" @tap="setBeauty">
+					<!-- #ifndef APP-PLUS -->
+					<text class="icon iconfont icon-magic- i-btntool more-icont"></text>
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
+					<text class="icon iconfont icon-magic- i-btntool more-icont">&#xe713;</text>
+					<!-- #endif -->
+					<text class="f28 white mt20">美颜</text>
+				</div>
+				<div class="more-list" :class="{'more-list-active': activeIndex == 1}" @tap="setWhiteness">
+					<!-- #ifndef APP-PLUS -->
+					<text class="icon iconfont icon-meibai i-btntool more-icont"></text>
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
+					<text class="icon iconfont icon-meibai i-btntool more-icont">&#xe635;</text>
+					<!-- #endif -->
+					<text class="f28 white mt20">美白</text>
+				</div>
+				<div class="more-list" :class="{'more-list-active': activeIndex == 2}" @tap="setDevice">
+					<!-- #ifndef APP-PLUS -->
+					<text class="icon iconfont icon-shuaxin i-btntool more-icont"></text>
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
+					<text class="icon iconfont icon-shuaxin i-btntool more-icont">&#xe636;</text>
+					<!-- #endif -->
+					<text class="f28 white mt20">相机切换</text>
+				</div>
+			</div>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				activeIndex: -1,
+				// 进度条
+				max: 5,
+				min: 0,
+				progressVal: 0,
+				beauty: 9,
+				whiteness: 9,
+				device_position: 'front',
+				value: 9,
+				showSlider: false
+			}
+		},
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('"+getApp().globalData.vueObj.font_url+"')"
+			});
+			// #endif
+		},
+		methods: {
+			show() {
+				this.popupVisible = true;
+			},
+			/*改变*/
+			sliderChange(e) {
+				console.log(e);
+				this.value = e.detail.value;
+				if (this.activeIndex == 0) {
+					uni.setStorageSync('beauty', this.value);
+					this.$emit('liveSet', {
+						type: 'beauty',
+						value: this.value
+					});
+				} else {
+					uni.setStorageSync('whiteness', this.value);
+					this.$emit('liveSet', {
+						type: 'whiteness',
+						value: this.value
+					});
+				}
+			},
+			setBeauty() {
+				this.activeIndex = 0;
+				let beauty = uni.getStorageSync('beauty');
+				if (beauty) {
+					this.value = beauty;
+				} else {
+					this.value = this.beauty;
+				}
+				this.showSlider = true;
+			},
+			setWhiteness() {
+				this.activeIndex = 1;
+				let whiteness = uni.getStorageSync('whiteness');
+				if (whiteness) {
+					this.value = whiteness;
+				} else {
+					this.value = this.whiteness;
+				}
+				this.showSlider = true;
+			},
+			setDevice() {
+				this.$emit('switchCamera');
+			},
+			close() {
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.more-box {
+		background-color: #2a2634;
+		width: 750rpx;
+		height: 350rpx;
+		position: fixed;
+		bottom: 0;
+		border-top-left-radius: 16rpx;
+		border-top-right-radius: 16rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 20rpx;
+		z-index: 9999;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 1;
+		align-items: center;
+		padding: 50rpx 0;
+	}
+
+	.more-icont {
+		font-size: 76rpx;
+	}
+
+	.more-list-active {
+		border-width: 1rpx;
+		border-color: #ea4678;
+		border-style: solid;
+		border-radius: 16rpx;
+	}
+
+	.Progress {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+	}
+
+	.progress-bar {
+		position: fixed;
+		bottom: 360rpx;
+		width: 750rpx;
+		justify-content: center;
+	}
+
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+</style>

@@ -1,0 +1,1 @@
+<view wx:if="{{a}}"><register wx:if="{{b}}" u-i="241dbfd4-0" bind:__l="__l"></register><application wx:if="{{c}}" u-i="241dbfd4-1" bind:__l="__l"></application></view>

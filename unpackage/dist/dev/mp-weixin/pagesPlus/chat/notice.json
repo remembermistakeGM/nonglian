@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "用户聊天",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "upload": "../../components/upload/upload"
+  }
+}

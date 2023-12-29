@@ -1,0 +1,268 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.inner-tab.data-v-f1cef4ac {
+  position: relative;
+  height: 100rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #ffffff;
+  z-index: 9;
+}
+.inner-tab .item.data-v-f1cef4ac {
+  flex: 1;
+  height: 100%;
+  line-height: 90rpx;
+  position: relative;
+  color: #999;
+  font-size: 32rpx;
+}
+.inner-tab .item.active.data-v-f1cef4ac,
+.inner-tab .item .arrow.active .iconfont.data-v-f1cef4ac {
+  color: #333333;
+  font-weight: bold;
+}
+.item.active.data-v-f1cef4ac::after {
+  content: "";
+  width: 72rpx;
+  height: 4rpx;
+  background: #EE1414;
+  border-radius: 2rpx;
+  position: absolute;
+  bottom: 14rpx;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.inner-tab .item .box.data-v-f1cef4ac {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.inner-tab .item .arrows.data-v-f1cef4ac {
+  margin-left: 10rpx;
+  line-height: 0;
+}
+.inner-tab .item .iconfont.data-v-f1cef4ac {
+  line-height: 24rpx;
+  font-size: 24rpx;
+}
+.inner-tab .item .arrow.data-v-f1cef4ac,
+.inner-tab .item .svg-icon.data-v-f1cef4ac {
+  width: 20rpx;
+  height: 20rpx;
+}
+.prodcut-list-wrap.data-v-f1cef4ac {
+  padding-top: 20rpx;
+}
+.prodcut-list-wrap .list.data-v-f1cef4ac {
+  background: #FFFFFF;
+}
+.prodcut-list-wrap .list .item.data-v-f1cef4ac {
+  padding: 20rpx;
+  display: flex;
+  border-bottom: 1rpx solid #f6f6f6;
+}
+.prodcut-list-wrap .product-cover.data-v-f1cef4ac,
+.prodcut-list-wrap .product-cover image.data-v-f1cef4ac {
+  width: 150rpx;
+  height: 150rpx;
+}
+.prodcut-list-wrap .product-info.data-v-f1cef4ac {
+  flex: 1;
+  margin-left: 30rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.prodcut-list-wrap .product-title.data-v-f1cef4ac {
+  display: -webkit-box;
+  line-height: 36rpx;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 26rpx;
+}
+.prodcut-list-wrap .already-sale.data-v-f1cef4ac {
+  color: #999;
+  font-size: 22rpx;
+}
+.prodcut-list-wrap .already-sale > text.data-v-f1cef4ac {
+  padding: 6rpx 10rpx;
+}
+.prodcut-list-wrap .price.data-v-f1cef4ac {
+  color: #e2231a;
+  font-size: 24rpx;
+}
+.prodcut-list-wrap .price .num.data-v-f1cef4ac {
+  margin-left: 6rpx;
+  padding: 0 4rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.inner-tab .item .box.data-v-f1cef4ac {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.shop_body.data-v-f1cef4ac {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 0rpx 20rpx;
+  box-sizing: border-box;
+}
+.shop_body_l_item.data-v-f1cef4ac {
+  margin: 0 auto;
+  background-color: white;
+  display: flex;
+  padding: 40rpx 0;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #D9D9D9;
+}
+.shop_body_l_item image.data-v-f1cef4ac {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 12rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.shop_body_l_item_info.data-v-f1cef4ac {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-left: 20rpx;
+  box-sizing: border-box;
+}
+.shop_body_l_item_info_title.data-v-f1cef4ac {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+}
+.shop_body_l_item_info_price.data-v-f1cef4ac {
+  display: flex;
+  align-items: flex-end;
+}
+.shop_body_l_item_info_price view.data-v-f1cef4ac {
+  margin-right: 15rpx;
+}
+.shop_body_l_item_info_others.data-v-f1cef4ac {
+  height: 30rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.shop_body_l_item_info_others_activity.data-v-f1cef4ac {
+  width: 150rpx;
+  height: 30rpx;
+  line-height: 30rpx;
+  border: 1rpx #E22319 solid;
+  border-radius: 30rpx;
+  /* font-size: 16rpx; */
+  color: #E22319;
+  text-align: center;
+  box-sizing: border-box;
+}
+.shop_body_l_item_info_others_sales.data-v-f1cef4ac {
+  color: #333333;
+}
+.shop_body2.data-v-f1cef4ac {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  background-color: #f2f2f2;
+}
+.shop_body_t_item.data-v-f1cef4ac {
+  width: 345rpx;
+  margin-bottom: 20rpx;
+  height: 520rpx;
+  overflow: hidden;
+  background-color: white;
+  border-radius: 12rpx;
+}
+.collect text.data-v-f1cef4ac {
+  color: #FFFFFF;
+}
+.shop_body_t_item image.data-v-f1cef4ac {
+  width: 100%;
+  height: 337.5rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.shop_body_t_item_info.data-v-f1cef4ac {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+.shop_body_t_item_info_title.data-v-f1cef4ac {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  margin-bottom: 30rpx;
+}
+.shop_body_t_item_info_price.data-v-f1cef4ac {
+  display: flex;
+  align-items: flex-end;
+}
+.shop_body_t_item_info_others.data-v-f1cef4ac {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+.shop_body_t_item_info_others_sales.data-v-f1cef4ac {
+  color: #999999;
+}
+.huaxianjia.data-v-f1cef4ac {
+  text-decoration: line-through;
+  color: #999;
+  margin-left: 5rpx;
+}
+.shop_red.data-v-f1cef4ac {
+  color: #F6220C;
+}
+.inner-tab .item .icon-sanjiao2.data-v-f1cef4ac {
+  font-size: 13rpx;
+}
+.inner-tab .item .icon-sanjiao1.data-v-f1cef4ac {
+  font-size: 13rpx;
+}
+.noborder.data-v-f1cef4ac {
+  border: none;
+}

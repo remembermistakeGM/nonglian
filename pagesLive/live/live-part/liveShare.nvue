@@ -1,0 +1,156 @@
+<template>
+	<view class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer">
+			<div class="more-box" @tap.stop="">
+				<div class="more-list" @tap="share">
+					<button class="icon iconfont icon-weixin i-btntool more-icont" open-type="share"></button>
+					<text class="f28 white mt20">分享微信好友</text>
+				</div>
+				<div class="more-list" @tap="getPoster">
+					<button class="icon iconfont icon-jingmeihaibao i-btntool more-icont"></button>
+					<text class="f28 white mt20">生成海报</text>
+				</div>
+			</div>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+			}
+		},
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "nvueIcon",
+				'src': "url('../../../static/fonts/iconfont.ttf')"
+			});
+			// #endif
+		},
+		methods: {
+			show() {
+				this.popupVisible = true;
+			},
+			getPoster(){
+				this.$emit('livePoster');
+			},
+			close() {
+				this.popupVisible = false;
+			},
+			share(){
+				
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: nvueIcon;
+	}
+
+	.nlv_borT {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.more-box {
+		background-color: #2a2634;
+		width: 750rpx;
+		height: 350rpx;
+		position: fixed;
+		bottom: 0;
+		border-top-left-radius: 16rpx;
+		border-top-right-radius: 16rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 20rpx;
+		z-index: 9999;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 1;
+		align-items: center;
+		padding: 50rpx 0;
+	}
+
+	.more-icont {
+		font-size: 76rpx;
+	}
+
+	.more-list-active {
+		border-width: 1rpx;
+		border-color: #ea4678;
+		border-style: solid;
+		border-radius: 16rpx;
+	}
+
+	.Progress {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+	}
+
+	.progress-bar {
+		position: fixed;
+		bottom: 360rpx;
+		width: 750rpx;
+		justify-content: center;
+	}
+
+	.wrap__giftPanel {
+		z-index: 100;
+	}
+	.icon-weixin{
+		color: #04BE01;
+		background: none;
+	}
+	.icon-jingmeihaibao{
+		background: none;
+	}
+</style>

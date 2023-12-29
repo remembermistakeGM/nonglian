@@ -1,0 +1,251 @@
+<template>
+	<view v-if="popupVisible" class="popup-footer">
+		<view class="pop__ui_panel">
+			<view class="pop__ui_mask" @tap="close"></view>
+			<view class="pop__ui_child anim-footer" @tap.stop="">
+				<div>
+					<div class="add-order-head d-b-c p20 f30">
+						<text class="f30">我的订单</text>
+						<image class="order-close" src="/static/live/close.png" mode=""  @tap="close"></image>
+					</div>
+					<list class="add-product-list">
+						<cell class="add-product-item d-s-s" v-for="(item, index) in listData" :key="index">
+							<div class="add-product-picture">
+								<image class="add-product-picture-image" :src="item.product[0].image.file_path" mode="aspectFill"></image>
+							</div>
+							<div class="flex-1 ml20">
+								<div class="order-num">
+									<text class="f28 gray9">订单号：{{item.order_no}}</text>
+								</div>
+								<div class="order-title">
+									<div class="text-ellipsis-2">
+										<text class="f28">{{ item.product[0].product_name }}</text>
+									</div>
+								</div>
+								<div class="order-money">
+									<text class="rose f28" style="font-weight: 700;">￥{{item.product[0].product_price}}</text>
+								</div>
+							</div>
+							<div class="order-statu">
+								<text class="rose f28" v-if="item.is_settled==1">已结算</text>
+								<text class="rose f28" v-if="item.is_settled==0">未结算</text>
+							</div>
+						</cell>
+					</list>
+				</div>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				popupVisible: false,
+				/*总条数*/
+				total: 0,
+				/*没有更多*/
+				no_more: false,
+				/*商品列表*/
+				listData: [],
+				/*当前页面*/
+				page: 1,
+				/*一页多少条*/
+				list_rows: 10,
+			}
+		},
+		props: ['shop_supplier_id','room_id'],
+		methods: {
+			show() {
+				this.popupVisible = true;
+				this.start();
+			},
+			/*开始*/
+			start() {
+				this.loading = true;
+				this.no_more = false;
+				this.listData = [];
+				this.page = 1;
+				this.list_rows = 10;
+				this.getData();
+			},
+
+			/*获取数据*/
+			getData() {
+				let self = this;
+				let page = self.page;
+				let list_rows = self.list_rows;
+				self.loading = true;
+				getApp()._get(
+					'plus.live.RoomApply/orderList', {
+						page: page || 1,
+						list_rows: list_rows,
+						shop_supplier_id: self.shop_supplier_id,
+						room_id:self.room_id,
+						pay_status:20
+					},
+					function(res) {
+						self.loading = false;
+						self.listData = self.listData.concat(res.data.list.data);
+						self.last_page = res.data.list.last_page;
+						if (res.data.list.last_page <= 1) {
+							self.no_more = true;
+						}
+					}
+				);
+			},
+
+			/*可滚动视图区域到底触发*/
+			loadmoreFunc() {
+				let self = this;
+				self.bottomRefresh = true;
+				self.page++;
+				self.loading = true;
+				if (self.page > self.last_page) {
+					self.loading = false;
+					self.no_more = true;
+					return;
+				}
+				self.getData();
+			},
+			close() {
+				this.popupVisible = false;
+				this.$emit('closeOrder');
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.pop__ui_mask {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+	}
+
+	.pop__ui_child {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 1001;
+	}
+
+	.pop__ui_head {
+		border-style: solid;
+		border-color: #ebebeb;
+		border-bottom-width: 1upx;
+		font-size: 28upx;
+		font-weight: 700;
+		padding: 30upx;
+		text-align: left;
+	}
+
+	.product-head {
+		flex-direction: row;
+	}
+
+	.product-head-btn,
+	.add-product-head-btn {
+		height: 60rpx;
+		line-height: 60rpx;
+		background-color: #fff;
+		border-color: #f72b6c;
+	}
+
+	.add-product-list {
+		width: 750rpx;
+		height: 700rpx;
+	}
+
+	.add-product-container {
+		position: absolute;
+		width: 750rpx;
+		height: 900rpx;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		border-radius: 16rpx 16rpx 0 0;
+		background-color: #FFFFFF;
+		transition: transform 0.2s ease;
+		transform: translate(0, 0);
+	}
+
+	.add-product-container-close {
+		transition: transform 0s ease;
+		transform: translate(0, 100%);
+	}
+
+	.add-product-head {
+		flex-direction: row;
+	}
+
+	.add-product-item {
+		flex-direction: row;
+		padding: 20rpx;
+	}
+
+	.add-product-picture {
+		width: 160rpx;
+		height: 160rpx;
+	}
+
+	.text-ellipsis-2 {
+		height: 70rpx;
+	}
+
+	.add-product-relation {
+		height: 60rpx;
+		line-height: 60rpx;
+		background-color: #51a938;
+		color: #fff;
+		border-color: #51a938;
+		font-size: 12px;
+	}
+
+	.add-product-relation-hover {
+		background-color: #abd7a2;
+		border-color: #abd7a2;
+	}
+
+	.order-close {
+		width: 40rpx;
+		height: 40rpx;
+	}
+
+	.add-order-head {
+		background-color: #eeeeee;
+		flex-direction: row;
+	}
+
+	.order-num {
+		font-size: 28px;
+		color: #ababab;
+		margin-bottom: 10rpx;
+	}
+
+	.order-title {
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.order-money {
+		margin-top: 20rpx;
+	}
+
+	.add-product-picture-image {
+		width: 160rpx;
+		height: 160rpx;
+	}
+</style>

@@ -1,0 +1,227 @@
+<template>
+	<view v-if="popupVisible" class="popup-footer">
+		<view class="pop__ui_panel">
+			<view class="pop__ui_mask" @tap="close"></view>
+			<view class="pop__ui_child anim-footer" @tap.stop="">
+				<view class="pop__ui_body">
+					<view class="wrap_commentPanel">
+						<view class="wrap_cmtFoot" :style="'bottom:' + inputBottom + 'px;'">
+							<view class="wrap__editorPanel uni_borT uni__editorPanel">
+								<view class="wrap_editor uni_editor">
+									<input
+										class="editor"
+										auto-focus="true"
+										v-model="content"
+										:adjust-position="false"
+										confirm-type="send"
+										@confirm="sendTextMsg()"
+										placeholder="说点什么..."
+										@focus="inputFocus"
+										@blur="inputBlur"
+									/>
+								</view>
+								<view class="uni_editor_btn" @tap="emojiShow = !emojiShow"><text class="icon iconfont icon-biaoqing"></text></view>
+								<view class="uni_editor_btn btn_submit uni__btn-primary bg_linear2" @tap="sendTextMsg"><text class="icon iconfont icon-fasong"></text></view>
+							</view>
+							<view class="bc-white" v-if="emojiShow">
+								<swiper class="slider">
+									<swiper-item v-for="(item, key) in emojiData" :key="key" class="slider-emoji" :class="[key == emojiData.length - 1 ? 'lastbox' : '']">
+										<text v-for="(emoji, index) in item" :key="index" @click="selemoji(emoji)" class="slider-emoji-icon">{{ emoji }}</text>
+									</swiper-item>
+								</swiper>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+import emoji from './emoji.js';
+import uniLoadMore from '@/components/uni-load-more.vue';
+import utils from '@/common/utils.js';
+export default {
+	components: {
+		uniLoadMore
+	},
+	data() {
+		return {
+			popupVisible: false,
+			emojiShow: false,
+			inputBottom: 0,
+			inputheight: 0,
+			content: ''
+		};
+	},
+	beforeCreate() {
+		// #ifdef APP-PLUS
+		const domModule = weex.requireModule('dom');
+		domModule.addRule('fontFace', {
+			fontFamily: 'iconfont',
+			src: "url('" + getApp().config.font_url + "')"
+		});
+		// #endif
+	},
+	props: ['emojiData'],
+	methods: {
+		selemoji(m) {
+			console.log(m);
+			this.content += m;
+		},
+		show() {
+			this.popupVisible = true;
+		},
+		close() {
+			this.popupVisible = false;
+		},
+		/*评论*/
+		sendTextMsg() {
+			uni.hideKeyboard();
+			this.$emit('closeMsg', this.content);
+			this.content = '';
+			this.emojiShow = false;
+			this.popupVisible = false;
+		},
+		inputFocus(e) {
+			this.inputBottom = e.detail.height;
+			this.emojiShow = false;
+			console.log(e);
+		},
+		inputBlur() {
+			this.inputBottom = 0;
+		}
+	}
+};
+</script>
+<style lang="scss" scoped>
+.pop__ui_mask {
+	background-color: #000;
+	opacity: 0.1;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1000;
+}
+
+.pop__ui_child {
+	background-color: #fbfbfb;
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+	font-size: 14px;
+	overflow: hidden;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1001;
+}
+
+.pop__ui_head {
+	border-style: solid;
+	border-color: #ebebeb;
+	border-bottom-width: 1upx;
+	font-size: 28upx;
+	font-weight: 700;
+	padding: 30upx;
+	text-align: center;
+}
+
+.iconfont {
+	font-family: nvueIcon;
+}
+
+.wrap_commentPanel {
+	flex-direction: column;
+	height: 11upx;
+}
+
+.uni_borT {
+	border-color: #dbdbdb;
+	border-style: solid;
+	border-top-width: 1upx;
+}
+
+.wrap__editorPanel {
+	flex-direction: row;
+	align-items: flex-end;
+	background-color: #fff;
+	padding: 20upx 30upx;
+}
+
+.wrap_editor {
+	flex: 1;
+	overflow: hidden;
+}
+
+.editor {
+	font-size: 14px;
+	line-height: 1.2;
+}
+
+.wrap_cmtFoot {
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 201911;
+}
+.uni__editorPanel .uni_editor {
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.uni_editor .editor {
+	caret-color: #41a863;
+	font-size: 28rpx;
+	max-height: 200rpx;
+	max-width: 100%;
+	line-height: 1.2;
+}
+.uni__editorPanel .uni_editor_btn {
+	align-self: flex-end;
+	justify-content: center;
+	padding: 0 8rpx;
+	height: 56rpx;
+}
+.uni__editorPanel .uni_editor_btn .iconfont {
+	color: #999;
+	font-size: 50rpx;
+}
+.uni__editorPanel .btn_submit {
+	border-radius: 40rpx;
+	font-size: 28rpx;
+	margin-left: 10rpx;
+	padding: 0 24rpx;
+	line-height: 56rpx;
+}
+.uni__editorPanel .btn_submit .iconfont {
+	color: #999;
+	font-size: 48rpx;
+}
+.bc-white {
+	background-color: #ffffff;
+}
+.slider {
+	width: 750rpx;
+	height: 256rpx;
+}
+.slider-emoji {
+	width: 750rpx;
+	direction: ltr;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: flex-start;
+	align-items: stretch;
+}
+.slider-emoji-icon {
+	width: 105rpx;
+	text-align: center;
+	padding: 21rpx 0;
+}
+.lastbox {
+	justify-content: flex-start;
+}
+</style>

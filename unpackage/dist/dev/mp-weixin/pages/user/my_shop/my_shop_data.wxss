@@ -1,0 +1,39 @@
+
+.shop_data.data-v-6f880281{
+		width: 90%;
+		padding: 30rpx;
+		background-color: white;
+		margin: 0 auto;
+		margin-top: 30rpx;
+		box-sizing: border-box;
+		border-radius: 30rpx;
+		color: #585858;
+}
+.shop_data_title.data-v-6f880281{
+		font-size: 30rpx;
+		margin-bottom: 50rpx;
+		font-weight: 800;
+}
+.deal .title.data-v-6f880281,.visit .title.data-v-6f880281{
+		
+		font-size: 30rpx;
+		padding-bottom: 15rpx;
+}
+.deal_list.data-v-6f880281 {
+		flex-wrap: wrap;
+}
+.deal_item.data-v-6f880281 {
+		width: 33%;
+		margin:20rpx 0;
+}
+.item_num.data-v-6f880281{
+		margin-bottom: 20rpx;
+		color: #ff8a00;
+}
+.datalist_item.data-v-6f880281{
+		/* text-align: center; */
+}
+.data_list.data-v-6f880281{
+		border-top: 1rpx solid #CCCCCC;
+		padding: 20rpx 20rpx;
+}

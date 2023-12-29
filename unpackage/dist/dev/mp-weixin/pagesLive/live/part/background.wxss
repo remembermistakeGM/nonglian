@@ -1,0 +1,147 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.iconfont.data-v-ca9a7f69 {
+  font-family: iconfont;
+}
+.nlv_borT.data-v-ca9a7f69 {
+  border-color: #ebebeb;
+  border-style: solid;
+  border-top-width: 1rpx;
+}
+.wrapgift-mask.data-v-ca9a7f69 {
+  background-color: #000;
+  opacity: 0.1;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 201910;
+}
+.pop__ui_child.data-v-ca9a7f69 {
+  background-color: #fbfbfb;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  font-size: 14px;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 201911;
+}
+.foot-box.data-v-ca9a7f69 {
+  height: 84rpx;
+  line-height: 84rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.1);
+  padding: 0 23rpx;
+}
+.foot-box .icon.iconfont.data-v-ca9a7f69 {
+  font-size: 22rpx;
+  color: #DDDDDD;
+}
+.more-box.data-v-ca9a7f69 {
+  background: rgba(0, 0, 0, 0.85);
+  width: 750rpx;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  box-sizing: border-box;
+}
+.more-box-list.data-v-ca9a7f69 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 25rpx 0 53rpx 0;
+}
+.more-box-list-item.data-v-ca9a7f69 {
+  width: 152rpx;
+  height: 194rpx;
+  border-radius: 10rpx;
+  flex-shrink: 0;
+  margin-right: 47rpx;
+  border: 3rpx solid;
+  border-color: rgba(0, 0, 0, 0);
+  padding: 6rpx;
+}
+.more-box-list-item-active.data-v-ca9a7f69 {
+  border: 3rpx solid #8AE4F0;
+  border-color: #e2231a;
+}
+.more-box-list-image.data-v-ca9a7f69 {
+  width: 137rpx;
+  height: 179rpx;
+  border-radius: 10rpx;
+}
+.more-list.data-v-ca9a7f69 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 72rpx;
+  color: #FFFFFF;
+}
+.wrap__giftPanel.data-v-ca9a7f69 {
+  z-index: 100;
+}
+.category_list.data-v-ca9a7f69 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 95rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+.category_item.data-v-ca9a7f69 {
+  flex-shrink: 0;
+  margin: 0 64rpx;
+  font-size: 28rpx;
+  color: #DDDDDD;
+  height: 95rpx;
+  line-height: 95rpx;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.category_item-active-after.data-v-ca9a7f69 {
+  position: absolute;
+  bottom: 1rpx;
+  left: 0;
+  width: 32rpx;
+  height: 5rpx;
+  background: #DDDDDD;
+  border-radius: 3rpx;
+}

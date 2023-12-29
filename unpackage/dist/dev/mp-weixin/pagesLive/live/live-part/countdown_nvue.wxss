@@ -1,0 +1,16 @@
+
+.countdown{
+	flex-direction: row;
+	height: 45rpx;
+	line-height: 45rpx;
+}
+.box {
+	display: inline-block;
+	width: 34rpx;
+	border-radius: 8rpx;
+	background: #fb4d70;
+	text-align: center;
+	height: 50rpx;
+	line-height: 45rpx;
+	color: #ffffff;
+}

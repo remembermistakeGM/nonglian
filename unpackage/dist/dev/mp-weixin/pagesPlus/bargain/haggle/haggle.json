@@ -1,0 +1,11 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "砍价购",
+  "usingComponents": {
+    "popup": "../../../components/uni-popup",
+    "countdown": "../../../components/countdown/countdown",
+    "rule": "./popup/Rule",
+    "share": "../../../components/mp-share",
+    "app-share": "../../../components/app-share"
+  }
+}

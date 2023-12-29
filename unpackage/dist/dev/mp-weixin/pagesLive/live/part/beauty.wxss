@@ -1,0 +1,120 @@
+
+.iconfont.data-v-2222082b {
+		font-family: iconfont;
+}
+.nlv_borT.data-v-2222082b {
+		border-color: #ebebeb;
+		border-style: solid;
+		border-top-width: 1rpx;
+}
+.wrapgift-mask.data-v-2222082b {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+}
+.pop__ui_child.data-v-2222082b {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+}
+.foot-box.data-v-2222082b{
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid rgba(255,255,255,.1);
+		padding: 0 23rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+}
+.foot-box .icon.iconfont.data-v-2222082b{
+		font-size: 22rpx;
+		color: #DDDDDD;
+}
+.more-box.data-v-2222082b {
+		background: rgba(0, 0, 0, .85);
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+}
+.more-box-list.data-v-2222082b{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 34rpx 107rpx 43rpx 134rpx;
+}
+.more-list.data-v-2222082b {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+}
+.more-list .icon.iconfont.data-v-2222082b{
+		 color: #FFFFFF;
+}
+.more-icont.data-v-2222082b {
+		font-size: 46rpx;
+		color: #FFFFFF;
+}
+.Progress.data-v-2222082b {
+		background-color: rgba(0, 0, 0, 0.3);
+		/* opacity: 0.3; */
+		height: 100rpx;
+		width: 700rpx;
+		position: fixed;
+		bottom: 370rpx;
+		border-radius: 16rpx;
+		left: 25rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		padding: 0 30rpx;
+}
+.progress-bar.data-v-2222082b {
+		width: 364rpx;
+		height: 75rpx;
+		margin-left: 193rpx;
+		align-items: center;
+		justify-content: center;
+		margin:auto;
+		padding-top: 30rpx;
+		/* background-color: red; */
+}
+.progress-bar-slider.data-v-2222082b{
+		width: 364rpx;
+		margin-left: 193rpx;
+}
+.wrap__giftPanel.data-v-2222082b {
+		z-index: 100;
+}
+.more-iconbox.data-v-2222082b{
+		width: 69rpx;
+		height: 69rpx;
+		background: rgba(255,255,255,.2);
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+}
+.more-iconbox-active.data-v-2222082b{
+		background: #8AE4F0;
+}

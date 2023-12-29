@@ -1,0 +1,23 @@
+
+.share-wrap.data-v-61e23576 {
+	width: 100%;
+	border-radius: 20rpx;
+	overflow: hidden;
+}
+.share-wrap .content image.data-v-61e23576{
+	width: 100%;
+}
+.share-wrap .close-btns.data-v-61e23576 {
+	margin: 50rpx auto 0;
+	width: 60rpx;
+	height: 60rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	background: none;
+	border: 2px solid #ffffff;
+}
+.home-push-wrap .close-btns .iconfont.data-v-61e23576 {
+	color: #ffffff;
+}

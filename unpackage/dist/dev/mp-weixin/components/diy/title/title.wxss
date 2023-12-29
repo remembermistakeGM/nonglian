@@ -1,0 +1,160 @@
+
+.diy-title-1,
+.diy-title-2,
+.diy-title-3 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.diy-title-4,
+.diy-title-5,
+.diy-title-7 {
+	flex-direction: column;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.diy-title-8 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.optional .diy-title {
+	padding: 10px;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.optional .diy-title .title-icon {
+	width: 32px;
+	height: 32px;
+	padding: 5px;
+	z-index: 1;
+}
+.diy-title .title-text {
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 0 5px;
+	z-index: 1;
+	font-size: 12px;
+	font-weight: 800;
+}
+.diy-title .title-text.noBg {
+	background: none !important;
+}
+.text-type1 {
+	display: flex;
+	align-items: flex-end;
+}
+.text-type4 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.text-type6 {
+	position: absolute;
+	z-index: 0;
+	font-weight: bold;
+	top: 0px;
+	left: 0;
+	right: 0;
+	margin: auto;
+	text-align: center;
+}
+.text-type4 .line {
+	width: 40px;
+	height: 1px;
+	background-color: #eee;
+}
+.text-type4 .dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	border: 2px solid #eee;
+}
+.diy-title .text-type1 .line {
+	border-left: 4px solid;
+	transform: rotate(25deg);
+	border-radius: 20px;
+	height: 16px;
+	display: block;
+	margin-right: 6px;
+}
+.diy-title .text-type1 .line:nth-of-type(2) {
+	height: 16px;
+	margin-right: 5px;
+	position: relative;
+}
+.op3 {
+	opacity: 0.3;
+}
+.diy-title .text-type1 .trd {
+	transform: rotate(40deg);
+	line-height: 0;
+	position: relative;
+	top: 2px;
+}
+.title-line {
+	width: 245px;
+	height: 1px;
+	background-color: #eeeeee;
+	border-radius: 1px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	top: 0;
+	right: 0;
+	margin: auto;
+	z-index: 0;
+}
+.title-line3 {
+	width: 245px;
+	height: 1px;
+	background-color: #eeeeee;
+	position: absolute;
+	left: 0;
+	bottom: 6px;
+	right: 0;
+	margin: auto;
+	z-index: 4;
+}
+.title-line3 .block3 {
+	width: 40px;
+	height: 3px;
+	left: 0;
+	right: 0;
+	bottom: 1px;
+	margin: auto;
+	background: #000;
+	position: absolute;
+	display: inline-block;
+	z-index: 1;
+}
+.block5,
+.block6 {
+	width: 30px;
+	height: 3px;
+	left: 0;
+	right: 0;
+	bottom: 4px;
+	margin: auto;
+	background: #000;
+	position: absolute;
+	display: inline-block;
+	z-index: 1;
+}
+.type7-subbox {
+	padding: 6px 16px;
+	border-radius: 200px;
+	line-height: 1;
+}
+.type8-subbox {
+	padding: 6px 14px;
+	border-radius: 200px;
+	line-height: 1;
+}
+.type8-before {
+	width: 4px;
+	margin-right: 6px;
+}

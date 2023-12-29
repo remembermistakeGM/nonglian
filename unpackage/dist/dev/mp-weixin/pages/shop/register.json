@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "供应商入驻",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "upload": "../../components/upload/upload"
+  }
+}

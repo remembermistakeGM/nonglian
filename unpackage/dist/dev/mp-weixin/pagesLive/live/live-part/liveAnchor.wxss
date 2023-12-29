@@ -1,0 +1,60 @@
+
+.pop__ui_mask.data-v-16a187e9 {
+		background-color: #000;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 1000;
+}
+.pop__ui_child.data-v-16a187e9 {
+		background-color: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9998;
+}
+.pop__ui_head.data-v-16a187e9 {
+		border-style: solid;
+		border-color: #ebebeb;
+		border-bottom-width: 1rpx;
+		font-size: 28rpx;
+		font-weight: 700;
+		padding: 30rpx;
+		text-align: left;
+}
+.foot-anchorinfo-wrap-anchorinfo.data-v-16a187e9{
+		margin-top: 150rpx;
+		height: 120rpx;
+}
+.foot-anchorinfo-wrap-photo-box.data-v-16a187e9{
+		position: fixed;
+		bottom: 280rpx;
+		left: 275rpx;
+		width: 200rpx;
+		height: 200rpx;
+		z-index:9999;
+}
+.foot-anchorinfo-wrap-photo.data-v-16a187e9{
+		width: 200rpx;
+		height: 200rpx;
+		border-radius: 50%;
+}
+.foot-anchorinfo-wrap-nickName.data-v-16a187e9{
+}
+.foot-anchorinfo-wrap-bottom.data-v-16a187e9{
+		height: 100rpx;
+		background-color: #f4f4f4;
+}
+.foot-anchorinfo-guanzhu.data-v-16a187e9{
+		color: #e34470;
+}
+.foot-anchorinfo-zhuye.data-v-16a187e9{
+		color: #545454;
+}

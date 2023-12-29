@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "我的砍价",
+  "usingComponents": {
+    "uni-load-more": "../../../components/uni-load-more",
+    "countdown": "../../../components/countdown/countdown"
+  }
+}

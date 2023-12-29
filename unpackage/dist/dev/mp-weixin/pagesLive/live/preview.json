@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "beauty": "./part/beauty",
+    "definition": "./part/definition",
+    "background": "./part/background"
+  }
+}

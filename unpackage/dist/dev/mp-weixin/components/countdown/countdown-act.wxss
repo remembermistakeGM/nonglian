@@ -1,0 +1,111 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+/* start--主题色--start */
+/* end--主题色--end */
+.countdown {
+  border-radius: 16rpx 0 16rpx 16rpx;
+  border: 1rpx solid #F4DACF;
+  padding: 2rpx;
+  padding-right: 10rpx;
+}
+[data-theme=theme0] .countdown {
+  border-color: #f4dcd2 !important;
+}
+[data-theme=theme1] .countdown {
+  border-color: rgba(255, 76, 1, 0.15) !important;
+}
+[data-theme=theme2] .countdown {
+  border-color: rgba(255, 204, 0, 0.15) !important;
+}
+[data-theme=theme3] .countdown {
+  border-color: rgba(23, 116, 255, 0.15) !important;
+}
+[data-theme=theme4] .countdown {
+  border-color: #ffffff !important;
+}
+[data-theme=theme5] .countdown {
+  border-color: #ebe8de !important;
+}
+[data-theme=theme6] .countdown {
+  border-color: rgba(98, 60, 235, 0.15) !important;
+}
+.countdown .numbox {
+  font-size: 22rpx;
+}
+.countdown.noborder {
+  border: none;
+}
+.countdown .daybox {
+  padding: 0 16rpx;
+  border-radius: 200rpx;
+  font-size: 22rpx;
+  margin-right: 7rpx;
+}
+.previewProduct text {
+  font-size: 22rpx;
+}
+.previewProduct .box {
+  padding: 0;
+  font-size: 22rpx;
+  background: #ffffff;
+  color: #ff4c01;
+  width: 36rpx;
+  height: 36rpx;
+  display: inline-block;
+  line-height: 36rpx;
+  text-align: center;
+  border-radius: 8rpx;
+}
+.previewProduct .daybox {
+  padding: 0;
+  font-size: 22rpx;
+  background: none;
+}
+.previewProduct.countdown {
+  border: none;
+  padding: 0;
+  font-size: 22rpx;
+  white-space: nowrap;
+}
+.diy-previewProduct text {
+  font-size: 18rpx;
+}
+.diy-previewProduct .box {
+  padding: 0;
+  font-size: 18rpx;
+  background: none;
+}
+.diy-previewProduct .daybox {
+  padding: 0;
+  font-size: 18rpx;
+  background: none;
+}
+.diy-previewProduct.countdown {
+  border: none;
+  padding: 0;
+  font-size: 18rpx;
+  white-space: nowrap;
+}

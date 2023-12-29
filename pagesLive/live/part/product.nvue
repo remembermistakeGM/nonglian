@@ -1,0 +1,600 @@
+<template>
+	<div class="wrap__giftPanel" v-if="popupVisible">
+		<view class="wrapgift-mask" @tap="close"></view>
+		<view class="pop__ui_child anim-footer"  v-if="!isSpec">
+			<div class="more-box p-0-20" @tap.stop="">
+				<view class="product-title">
+					<text class="f32 gray3" v-if="type==0">共{{product_list.length}}件商品</text>
+					<text class="f32 gray3" v-if="type==1">共{{course_list.length}}件课程</text>
+					<view class="icon iconfont icon-guanbi" @click="close">
+						<!-- #ifdef APP-PLUS -->
+						<text class="icon iconfont icon-guanbi">&#xe629;</text>
+						<!-- #endif -->
+					</view>
+				</view>
+				<view class="d-r d-s-c">
+					<text :class="type==1?'item p20 f26':'item-active p20 f26'" @click="type=0">商品</text>
+					<text :class="type==0?'item p20 f26':'item-active p20 f26'" @click="type=1">课程</text>
+				</view>
+				<scroll-view v-if="type==0" class="product_list" scroll-y show-scrollbar="false">
+					<view class="product-item" v-for="(item,index) in product_list" :key='index'>
+						<view class="product-cover">
+							<text class="over-img" v-if="item.product.product_stock<=0">-已抢光-</text>
+							<image class="product-img" :src="item.product.image[0].file_path" mode="aspectFill"></image>
+							<view class="porduct_no"><text class="porduct_no_text">{{index+1}}</text></view>
+							<!-- <text class="porduct_off">已下架</text> -->
+							<text class="porduct_on" v-if="live_product_id==item.live_product_id">讲解中</text>
+						</view>
+						<view class="porduct-item-right">
+							<view>
+								<text class="product-name text-ellipsis-2">{{item.product.product_name}}</text>
+								<text class="no-stock" v-if="item.product.product_stock<=0">商品已抢光</text>
+								<text class="pro-stock" v-else>库存：{{item.product.product_stock}}</text>
+							</view>
+							<view class="d-b-c f-d-i" style="width: 500rpx;">
+								<text class="product-price flex-1">￥{{item.product.product_price}}</text>
+								<view class="d-e-c f-d-i f-s-0">
+									<template v-if="isCaster">
+										<view class="product-btn" v-if="live_product_id==item.live_product_id"
+											@tap="cancelExplain()"><text class="f22 white">取消讲解</text></view>
+										<view class="product-btn" v-else @tap="setExplain(item)"><text
+												class="f22 white">设为讲解</text></view>
+									</template>
+									<template v-else>
+										<view class="product-btn" @click="buyClick(item,1)"><text
+												class="white f22">去抢购</text></view>
+									</template>
+								</view>
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+				<scroll-view v-if="type==1" class="product_list" scroll-y show-scrollbar="false">
+					<view class="product-item" v-for="(item,index) in course_list" :key='index'>
+						<view class="product-cover">
+							<image class="product-img" :src="item.course.image.file_path" mode="aspectFill"></image>
+							<view class="porduct_no"><text class="porduct_no_text">{{index+1}}</text></view>
+							<!-- <text class="porduct_off">已下架</text> -->
+							<text class="porduct_on" v-if="live_product_id==item.live_product_id">讲解中</text>
+						</view>
+						<view class="porduct-item-right">
+							<view>
+								<text class="product-name text-ellipsis-2">{{item.course.title}}</text>
+							</view>
+							<view class="d-b-c f-d-i" style="width: 500rpx;">
+								<text class="product-price flex-1">￥{{item.course.course_price}}</text>
+								<view class="d-e-c f-d-i f-s-0">
+									<template v-if="isCaster">
+										<view class="product-btn" v-if="live_product_id==item.live_product_id"
+											@tap="cancelExplain()"><text class="f22 white">取消讲解</text></view>
+										<view class="product-btn" v-else @tap="setExplain(item)"><text
+												class="f22 white">设为讲解</text></view>
+									</template>
+									<template v-else>
+										<view class="product-btn" @click="buyClick(item,0)"><text
+												class="white f22">去抢购</text></view>
+									</template>
+								</view>
+							</view>
+						</view>
+					</view>
+				</scroll-view>
+			</div>
+		</view>
+		<!--购物确定-->
+		<spec ref="specPop" @close="closePopup"></spec>
+	</div>
+</template>
+
+<script>
+	import spec from './spec.nvue';
+	export default {
+		components: {
+			spec
+		},
+		data() {
+			return {
+				isSpec: false,
+				img_index: 0,
+				popupVisible: false,
+				type: 0,
+				product_id: 0,
+				detail: {},
+				/*商品属性*/
+				specData: null,
+				/*子级页面传参*/
+				productModel: {},
+			}
+		},
+		props: ['product_list', 'course_list', 'isCaster', 'room_id', 'live_product_id'],
+		beforeCreate() {
+			// #ifdef APP-PLUS
+			const domModule = weex.requireModule('dom')
+			domModule.addRule('fontFace', {
+				fontFamily: "iconfont",
+				'src': "url('" + getApp().globalData.vueObj.font_url + "')"
+			});
+			// #endif
+		},
+		methods: {
+			closePopup() {
+				this.product_id = 0;
+				this.isSpec = false;
+			},
+			buyClick(e, n) {
+				let self = this;
+				console.log(e)
+				if (n) {
+					this.product_id = e.product.product_id;
+					console.log('打开规格选择')
+					this.getData();
+				} else {
+					// this.gotoPage('/pages/course/course-detail?course_id=' + e.course_id);
+					uni.navigateTo({
+						url: '/pages/course/course-detail?course_id=' + e.course.course_id + '&room_id=' + self
+							.room_id
+					})
+				}
+				// this.gotoPage('/pages/order/confirm-order?order_type=live_product&room_id='+room_id+'live_product_id='+item.live_product_id);
+				// gotoPage('/pages/order/confirm-order?order_type=live_course&room_id='+room_id+'live_product_id='+item.live_product_id)
+			},
+			/*获取数据*/
+			getData() {
+				let self = this;
+				let product_id = self.product_id;
+
+				console.log('商品详情')
+				getApp()._get(
+					'product.product/detail', {
+						product_id: product_id,
+					},
+					function(res) {
+						// 初始化商品多规格
+						self.specData = null;
+						if (res.data.detail.spec_type == 20) {
+							self.initSpecData(res.data.specData);
+						}
+						self.detail = res.data.detail;
+						self.openPopup();
+					}
+				);
+			},
+			/*多规格商品*/
+			initSpecData(data) {
+				for (let i in data.spec_attr) {
+					for (let j in data.spec_attr[i].spec_items) {
+						data.spec_attr[i].spec_items[j].checked = false;
+					}
+				}
+				this.specData = data;
+				if (this.specData.spec_attr) {
+					this.specData.spec_attr.forEach(item => {
+						this.alreadyChioce += item.group_name;
+						this.alreadyChioce += ' / ';
+					});
+					this.alreadyChioce = this.alreadyChioce.replace(/(\s\/\s)$/gi, '');
+				}
+			},
+
+			/*选规格*/
+			openPopup() {
+				let obj = {
+					specData: this.specData,
+					detail: this.detail,
+					productSpecArr: this.specData != null ? new Array(this.specData.spec_attr.length) : [],
+					show_sku: {
+						sku_image: '',
+						seckill_price: 0,
+						product_sku_id: 0,
+						line_price: 0,
+						seckill_stock: 0,
+						seckill_product_sku_id: 0,
+						sum: 1
+					},
+					type: 'order',
+					room_id: this.room_id
+				};
+				this.productModel = obj;
+				// this.isPopup = true;\
+				console.log(this.productModel);
+				console.log('商品详情初始化结束');
+				this.$refs.specPop.show(this.productModel);
+				this.isSpec = true;
+				// this.$refs.specPop.show();
+			},
+			show() {
+				this.popupVisible = true;
+			},
+			setExplain(item) {
+				console.log('------setExplain-------------');
+				let self = this;
+				uni.showLoading({
+					title: '设置中',
+					mask: true
+				});
+				getApp()._post(
+					'live.room/set_product', {
+						room_id: self.room_id,
+						live_product_id: item.live_product_id
+					},
+					function(res) {
+						self.product_active = item.product_id;
+						// self.$emit('setProduct', item.product_id);
+						// self.close();
+					}
+				);
+				let product = {}
+				if (self.type == 0) {
+					product = {
+						product_image: item.product.image[0].file_path,
+						product_name: item.product.product_name,
+						product_price: item.product.product_price,
+						product_id: item.live_product_id,
+						nav_id: item.product.product_id,
+						product_type: 1
+					}
+				} else {
+					product = {
+						product_image: item.course.image.file_path,
+						product_name: item.course.title,
+						product_price: item.course.course_price,
+						product_id: item.live_product_id,
+						nav_id: item.course.course_id,
+						product_type: 2
+					}
+				}
+				this.$emit('explainProduct', product);
+				this.popupVisible = false;
+			},
+			cancelExplain() {
+				console.log('------cancelExplain-------------');
+				console.log('------setExplain-------------');
+				let self = this;
+				uni.showLoading({
+					title: '设置中',
+					mask: true
+				});
+				getApp()._post(
+					'live.room/set_product', {
+						room_id: self.room_id,
+						live_product_id: 0
+					},
+					function(res) {
+						self.product_active = 0;
+					}
+				);
+				this.$emit('explainProduct', null);
+				this.popupVisible = false;
+			},
+			close() {
+				this.$emit('close');
+				this.popupVisible = false;
+			},
+		}
+	}
+</script>
+
+<style scoped>
+	.iconfont {
+		font-family: iconfont;
+	}
+
+	.nlv_borT {
+		border: #ebebeb;
+		border-style: solid;
+		border-top-width: 1upx;
+	}
+
+	.wrapgift-mask {
+		background: #ffffff;
+		opacity: .1;
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 201910;
+	}
+
+	.pop__ui_child {
+		background: #fbfbfb;
+		border-top-left-radius: 12px;
+		border-top-right-radius: 12px;
+		font-size: 14px;
+		overflow: hidden;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 201911;
+	}
+
+	.foot-box {
+		height: 84rpx;
+		line-height: 84rpx;
+		border-top: 1rpx solid;
+		padding: 0 23rpx;
+		border-color: rgba(255, 255, 255, .1);
+	}
+
+	.foot-box .icon.iconfont {
+		font-size: 22rpx;
+		color: #DDDDDD;
+	}
+
+	.more-box {
+		background: #ffffff;
+		width: 750rpx;
+		position: fixed;
+		bottom: 0;
+		display: flex;
+		flex-direction: column;
+		z-index: 9999;
+		box-sizing: border-box;
+	}
+
+	.product-title {
+		height: 100rpx;
+		padding: 0 27rpx;
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+		align-items: center;
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333333;
+		border-bottom: 1rpx solid #eeeeee;
+	}
+
+	.more-box .product-title .icon-guanbi {
+		font-size: 32rpx;
+		color: #999999;
+	}
+
+	.more-box-list {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		padding: 25rpx 0 53rpx 0;
+	}
+
+	.more-box-list-item {
+		width: 186rpx;
+		border-radius: 10rpx;
+		flex-shrink: 0;
+		margin-right: 47rpx;
+		color: #DDDDDD;
+	}
+
+	.more-box-list-item .item-image {
+		width: 196rpx;
+		height: 192rpx;
+		border-radius: 10rpx;
+		border: 3rpx solid;
+		border-color: rgba(0, 0, 0, 0);
+		padding: 6rpx;
+		margin-bottom: 4rpx;
+	}
+
+	.more-box-list-item .item-image image {
+		width: 184rpx;
+		height: 180rpx;
+		border-radius: 10rpx;
+	}
+
+	.more-box-list-item .item-image.active {
+		border: 3rpx solid #8AE4F0;
+	}
+
+	.more-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		width: 72rpx;
+		color: #FFFFFF;
+	}
+
+	.wrap__giftPanel {
+		z-index: 10000;
+	}
+	.op0{
+		opacity: 0;
+	}
+	.category_list {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		height: 95rpx;
+		border-bottom: 1rpx solid;
+		border-color: rgba(255, 255, 255, .1);
+		overflow-x: auto;
+	}
+
+	.product_list {
+		padding-bottom: 80rpx;
+		height: 730rpx;
+	}
+
+	.product-item {
+		padding: 33rpx 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	.product-cover {
+		width: 184rpx;
+		height: 184rpx;
+		border-radius: 5rpx;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.product-img {
+		width: 184rpx;
+		height: 184rpx;
+		border-radius: 5rpx;
+	}
+
+	.porduct_no {
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 3;
+		width: 54rpx;
+		height: 36rpx;
+		line-height: 36rpx;
+		background: rgba(0, 0, 0, .65);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.porduct_no_text {
+		color: #FFFFFF;
+		font-size: 24rpx;
+	}
+
+	.porduct_on {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 184rpx;
+		height: 41rpx;
+		line-height: 41rpx;
+		text-align: center;
+		color: #FFFFFF;
+		font-size: 18rpx;
+		background: #E2231A;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		z-index: 3;
+	}
+
+	.porduct_off {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 184rpx;
+		height: 41rpx;
+		font-size: 18rpx;
+		color: #FFFFFF;
+		background: #999999;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		z-index: 3;
+		text-align: center;
+	}
+
+	.over-img {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		text-align: center;
+		width: 184rpx;
+		height: 184rpx;
+		line-height: 184rpx;
+		border-radius: 5rpx;
+		background: rgba(0, 0, 0, .45);
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		font-size: 20rpx;
+		color: #FFFFFF;
+		z-index: 2;
+	}
+
+	.porduct-item-right {
+		margin-left: 20rpx;
+		height: 184rpx;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
+		flex: 1;
+	}
+
+	.product-name {
+		lines: 2;
+		font-size: 24rpx;
+		color: #333333;
+		height: 64rpx;
+		width: 500rpx;
+	}
+
+	.product-price {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #3A3838;
+	}
+
+	.no-stock {
+		width: 280rpx;
+		height: 28rpx;
+		line-height: 28rpx;
+		font-size: 18rpx;
+		color: #FFFFFF;
+		padding-left: 18rpx;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		background: linear-gradient(-65deg, #E2231A, #E2231A);
+		border-radius: 14rpx;
+		margin-top: 9rpx;
+		flex-direction: row;
+
+	}
+
+	.pro-stock {
+		font-size: 24rpx;
+		font-weight: 500;
+		color: #999999;
+		margin-top: 20rpx;
+	}
+
+	.product-btn {
+		padding: 0 35rpx;
+		height: 46rpx;
+		background: #E2231A;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		border: 1rpx solid #E2231A;
+		color: #FFFFFF;
+		font-size: 22rpx;
+		border-radius: 5rpx;
+		margin-left: 16rpx;
+	}
+
+	.product-btn-border {
+		padding: 0 35rpx;
+		height: 46rpx;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		font-size: 22rpx;
+		border-radius: 5rpx;
+		margin-left: 16rpx;
+		border: 1rpx solid #dddddd;
+		color: #DDDDDD;
+		background-color: #FFFFFF;
+	}
+
+	.item-active {
+		color: #E2231A;
+	}
+</style>

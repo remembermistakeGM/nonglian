@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "直播预告",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-load-more": "../../../../../components/uni-load-more",
+    "countdown": "../../../../../components/countdown/countdown",
+    "share": "../dialog/share"
+  }
+}

@@ -1,0 +1,53 @@
+
+.express-info .base-info {
+		background: #ffffff;
+		border-bottom: 1px solid #eeeeee;
+}
+.express-info .list {
+		padding: 30rpx 30rpx 30rpx 50rpx;
+		margin-top: 20rpx;
+		border-top: 1px solid #eeeeee;
+		background: #ffffff;
+}
+.express-info .list .item {
+		position: relative;
+		padding: 30rpx;
+		padding-left: 40rpx;
+		padding-right: 0;
+		border-left: 1px solid #cccccc;
+}
+.express-info .list .item::before {
+		display: block;
+		content: '';
+		position: absolute;
+		top: 30rpx;
+		left: -18rpx;
+		width: 20rpx;
+		height: 20rpx;
+		border: 8rpx solid #ffffff;
+		border-radius: 50%;
+		background: #CCCCCC;
+}
+.express-info .list .item::after {
+		display: block;
+		content: '';
+		position: absolute;
+		top: 30rpx;
+		left: -18rpx;
+		width: 30rpx;
+		height: 30rpx;
+		border-radius: 50%;
+		border: 4rpx solid #CCCCCC;
+}
+.express-info .list .item.active::before {
+		background: #f00808;
+}
+.express-info .list .item.active::after {
+		border: 4rpx solid #f00808;
+}
+.express-info .list .item {
+		color: #999999;
+}
+.express-info .list .item.active {
+		color: #f00808;
+}

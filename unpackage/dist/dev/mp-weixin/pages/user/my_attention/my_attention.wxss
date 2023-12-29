@@ -1,0 +1,111 @@
+
+page {
+		background-color: #f2f2f2;
+}
+.h1 {
+		font-size: 32rpx;
+}
+.h2 {
+		font-size: 28rpx;
+}
+.h3 {
+		font-size: 24rpx;
+}
+.h4 {
+		font-size: 20rpx;
+}
+.h5 {
+		font-size: 16rpx;
+}
+.h6 {
+		font-size: 12rpx;
+}
+.red {
+		color: #E2231A;
+}
+.huaxianjia {
+		text-decoration: line-through;
+		color: #585858;
+		margin-left: 5rpx;
+}
+.shop_body {
+		width: 100%;
+		background-color: #f2f2f2;
+}
+.shop_body_l_item {
+		width: 90%;
+		height: 250rpx;
+		margin: 0 auto;
+		background-color: white;
+		border-radius: 15rpx;
+		margin-top: 20rpx;
+		display: flex;
+		align-items: center;
+		padding: 20rpx;
+		box-sizing: border-box;
+		position: relative;
+}
+.shop_body_l_item image {
+		width: 34.5%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.1);
+}
+.shop_body_l_item_info {
+		width: 65.5%;
+		height: 170rpx;
+		display: flex;
+		justify-content: space-between;
+		flex-direction: column;
+		padding-left: 20rpx;
+		box-sizing: border-box;
+}
+.shop_body_l_item_info_title {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		text-overflow: ellipsis;
+		-webkit-box-orient: vertical;
+		word-wrap: break-word;
+		word-break: break-all;
+		overflow: hidden;
+}
+.shop_body_l_item_info_price {
+		display: flex;
+		align-items: flex-end;
+}
+.shop_body_l_item_info_price view {
+		margin-right: 15rpx;
+}
+.shop_body_l_item_info_others {
+		width: 100%;
+		height: 30rpx;
+		display: flex;
+		justify-content: space-between;
+}
+.shop_body_l_item_info_others_activity {
+		width: 150rpx;
+		height: 30rpx;
+		line-height: 30rpx;
+		border: 1rpx #E22319 solid;
+		border-radius: 30rpx;
+		/* font-size: 16rpx; */
+		color: #E22319;
+		text-align: center;
+		box-sizing: border-box;
+}
+.shop_body_l_item_info_others_sales {
+		color: #585858;
+}
+.shop_body_l_item button {
+		font-size: 24rpx;
+		width: 120rpx;
+		height: 60rpx;
+		line-height: 60rpx;
+		padding: 0;
+		background-image: linear-gradient(90deg, #F11E0B, #F77737);
+		color: white;
+		position: absolute;
+		top: 165rpx;
+		left: 530rpx;
+		z-index: 999;
+}
